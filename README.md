@@ -6,13 +6,13 @@ been a trusted partner to the world’s leading websites and mobile applications
 accounts. Today, TeleSign’s data-driven, cloud communications platform is changing the way businesses engage with
 customers and prevent fraud.
 
-For more information about TeleSign, visit our `website <http://www.TeleSign.com>`_.
+For more information about TeleSign, visit our [website](http://www.TeleSign.com>).
 
 Documentation
 -------------
 
 Code documentation is included in the SDK. Complete documentation, quick start guides and reference material
-for the TeleSign API is available within the `TeleSign Developer Center <https://developer.telesign.com/>`_.
+for the TeleSign API is available within the [TeleSign Developer Center](https://developer.telesign.com/).
 
 Installation
 ------------
@@ -32,8 +32,8 @@ Authentication
 --------------
 
 You will need a Customer ID and API Key in order to use TeleSign’s API. If you already have an account you can retrieve
-them from your account dashboard within the `Portal <https://portal.telesign.com/login>`_. If you have not signed up
-yet, sign up `here <https://portal.telesign.com/signup>`_.
+them from your account dashboard within the [Portal](https://portal.telesign.com/login). If you have not signed up
+yet, sign up [here](https://portal.telesign.com/signup).
 
 
 Running Examples
@@ -103,7 +103,7 @@ The following code will make a phone call and wait 30 seconds and then check for
 
 ```javascript
 var callback_url = "http://www.mydomain.com/callback";
-var voice = "f-en-IN" // Indian English - full list avail in REST docs ai developer.telesign.com
+var voice = "f-en-IN" // Indian English accent - full list avail in REST docs ai developer.telesign.com
 var message = "Hello from TeleSign!"; // contents of your SMS
 var message_type = "ARN"; // // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
 var account_lifecycle_event = "create"; // see options in API docs at developer.telesign.com
@@ -169,4 +169,4 @@ Troubleshooting
 ---------------
 
 * If you are using the trial account, make sure you understand it has some limitations. Use only the phone number you have verified. 
-* If are unable to understand a field, make sure you look at the REST documentation located `here <https://developer.telesign.com/docs/>`_.
+* If are unable to understand a field, make sure you look at the REST documentation located [here](https://developer.telesign.com/docs/).
