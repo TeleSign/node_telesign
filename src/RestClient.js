@@ -16,6 +16,9 @@ class RestClient {
         this.timeout = timeout; 
         this.debug = debug;
 
+        if(debug){console.log("Init PhoneId Client")}
+
+
         try{
             if(!user_agent){
                 this.user_agent="TeleSignSDK/ECMAScript-Node v"+packagejson.version+" "+os.arch()+"/"+os.platform()+"-v"+os.release(); // Generates a Node useragent - helpful in diagnosing errors

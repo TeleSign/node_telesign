@@ -2,7 +2,7 @@
   "name": "telesignsdk",
   "version": "1.0.0",
   "description": "Official TeleSign SDK for Rest APIs including Messaging (SMS), Score, PhoneID, Voice, and AppVerify",
-  "main": "src/main.js",
+  "main": "src/TeleSign.js",
   "scripts": {
   },
   "dependencies":{
@@ -20,12 +20,15 @@
     "voice",
     "twofactor",
     "2factor",
+    "authenticate",
+    "authentication",
     "phone",
     "call",
     "text",
     "AppVerify",
     "2FA",
-    "Twilio"
+    "Twilio",
+    "Nexmo"
   ],
   "author": "Shikhir Singh <ssingh@telesign.com>",
   "license": "MIT"

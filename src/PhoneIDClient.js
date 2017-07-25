@@ -4,6 +4,8 @@ var RestClient = require('./RestClient.js');
 class PhoneIDClient extends RestClient {
     constructor(customerId,  apiKey, restEndpoint=null, timeout=15000, useragent=null, debug=false){
         super(customerId, apiKey, restEndpoint, timeout, useragent, debug);
+        if(debug){console.log("Init PhoneID")}
+        
         this.phoneid_resource = "/v1/phoneid/";
     }
     getPhoneID(callback, phone_number, accountLifecycleEvent=null, originating_ip=null){

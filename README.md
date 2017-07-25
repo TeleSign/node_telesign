@@ -23,6 +23,10 @@ To add the TeleSign Node.js SDK using NPM to your Node.js project:
 npm install telesignsdk -save
 ```
 
+If you have already cloned this SDK, you can using the following command
+```
+npm install ./path/to/sdk -save
+```
 
 Authentication
 --------------
@@ -32,10 +36,15 @@ them from your account dashboard within the `Portal <https://portal.telesign.com
 yet, sign up `here <https://portal.telesign.com/signup>`_.
 
 
-Node Example
+Running Examples
+----------------
+
+Working examples are located in the examples folder. We recommend you start here
+
+Sample Code
 ------------
 
-After installing the SDK, begin by including the telesign SDK and declaring customerId, apiKey, rest_endpoint, and timeout variables
+After installing the SDK, begin by including the telesign SDK and declaring customerId, apiKey, rest_endpoint, and timeout variables. 
 
 ```javascript
     var TeleSignSDK = require('telesignsdk');
@@ -44,6 +53,11 @@ After installing the SDK, begin by including the telesign SDK and declaring cust
     var rest_endpoint = "https://rest-api.telesign.com";
     var timeout = 10*1000; // 10 secs
 
+    var telesign = new TeleSignSDK( customerId, 
+                                    apiKey, 
+                                    rest_endpoint,
+                                    timeout // optional
+                                  );
 ```
 
 Example: Messaging (SMS) 
@@ -55,37 +69,31 @@ Here is an example to send an SMS
     var phoneNumber = "12125555555"; // Your end user’s phone number, as a string of digits without spaces or punctuation, beginning with the country dialing code (for example, “1” for North America)
     var message = "You're scheduled for a dentist appointment at 2:30PM.";
     var messageType = "ARN"; // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
-    var reference_id = null;
+    var reference_id = null; // need this to check status later
 
-    var messaging = new TeleSignSDK.MessagingClient(customerID, apiKeys, rest_endpoint, timeout);
-
-    messaging.sendMessage(function(err, reply){    
-        if(err){
-            console.error(err); // network failure likely cause for error
-        }
-        else{
-            console.log("YAY!, the SMS message is being sent now by TeleSign!");
-            console.log(reply);
-            reference_id=reply.reference_id; // save the reference_id to check status of the message 
-        }
-    }, phoneNumber, message, messageType);
+    telesign.sms.sendMessage(function(err, reply){    
+            if(err){
+                console.log("Error: Could not reach TeleSign's servers");
+                console.error(err); // network failure likely cause for error
+            }
+            else{
+                console.log("YAY!, the SMS message is being sent now by TeleSign!");
+                console.log(reply);
+                reference_id=reply.reference_id; // save the reference_id to check status of the message 
+            }
+        },  
+        mobile_number, 
+        message, 
+        message_type
+    );
 ```
 
-Here is how to check the status of your SMS
+Here is how to check the status of your SMS (eg. has the SMS been delivered?)
 
 ```javascript
-
-    var messaging = new TeleSignSDK.MessagingClient(customerID, apiKeys, rest_endpoint, timeout);
-
-    messaging.getMessageStatus(function(err, statusreply){
-
-        if(err){
-            console.error(err); // network failure likely cause for error
-        }
-        else{
-            console.log(reply);
-        }
-    }, reference_id); // notice, reference_id was returned when the message was sent
+    telesign.sms.getMessageStatus(function(err, reply){ 
+        console.log(reply);
+    }, reference_id);   
 ```
 
 Example: Voice Message 
@@ -94,24 +102,35 @@ Example: Voice Message
 The following code will make a phone call and wait 30 seconds and then check for status the phone call
 
 ```javascript
-    var voice = new TeleSignSDK.VoiceClient(customerID, apiKeys, rest_endpoint, timeout);
-    var language = "en-GB" // British English - full list avail in REST docs ai developer.telesign.com
-    var callback_url = "http://www.mydomain.com/callback";
-    var account_lifecycle_event = "create"; // see options in API docs at developer.telesign.com
+var callback_url = "http://www.mydomain.com/callback";
+var voice = "f-en-IN" // Indian English - full list avail in REST docs ai developer.telesign.com
+var message = "Hello from TeleSign!"; // contents of your SMS
+var message_type = "ARN"; // // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
+var account_lifecycle_event = "create"; // see options in API docs at developer.telesign.com
 
-    voice.call(function(err, call_reply){
-        setTimeout(function(){
-            voice.getCallStatus(function(err, statusreply){
-                console.log(statusreply);
-            }, call_reply.reference_id)
-        },30*1000); // wait 10 secs and see the status of the call
-    },  phoneNumber, 
-        message, 
-        messageType, 
-        language, // optional param
-        callback_url, // optional param
-        account_lifecycle_event); // optional param
 
+var reference_id = null;
+
+
+// Send the SMS
+telesign.voice.call(function(err, call_reply){    
+        if(err){
+            console.log("Error: Could not reach TeleSign's servers");
+            console.error(err); // network failure likely cause for error
+        }
+        else{
+            console.log("YAY!, TeleSign is attempting to call the number provided!");
+            console.log(call_reply);
+            reference_id=call_reply.reference_id; // save the reference_id to check status of the message 
+        }
+    },  
+    mobile_number, 
+    message, 
+    message_type,
+    voice, // optional param - if null, it will select US English
+    callback_url, // optional param
+    account_lifecycle_event // optional param
+);
 ```
 
 
@@ -121,37 +140,33 @@ Example: PhoneID (Metadata on phone number for fraud risk analysis)
 The following code will retreive metadata on a phone number using the PhoneID API
 
 ```javascript
-    var phoneid = new TeleSignSDK.PhoneIDClient(customerID, apiKeys, rest_endpoint, timeout);
-    var account_lifecycle_event = "create"; // see options in API docs at developer.telesign.com
-    var originating_ip = "203.0.113.45";
-
-    phoneid.getPhoneID(function(err, reply){
+var accountLifecycleEvent = "create";
+telesign.phoneid.getPhoneID(function(err, reply){
         console.log(reply);
-    }, 
-    phoneNumber,
-    account_lifecycle_event, // optional param
-    originating_ip); // optional param
+    },  mobile_number, 
+    accountLifecycleEvent
+    // originating_ip  // <optional>
+);
 ```
 
 Example: Score API (Metadata on phone number for fraud risk analysis)
 ---------------------------------------------------------------------
 
 ```javascript
-    var score = new TeleSignSDK.ScoreClient(customerID, apiKeys, rest_endpoint, 10*1000);
-    var accountLifecycleEvent = "create";
-    score.getScore(function(err, reply){
+var accountLifecycleEvent = "create";
+telesign.score.getScore(function(err, reply){
         console.log(reply);
-    },  "13109991964", 
-        accountLifecycleEvent
-        // originating_ip,  // OPTIONAL PARAM
-        // device_id,       // OPTIONAL PARAM
-        // account_id       // OPTIONAL PARAM
-    );
-
+    },  mobile_number, 
+    accountLifecycleEvent
+    // originating_ip,  // OPTIONAL 
+    // device_id,       // OPTIONAL
+    // account_id       // OPTIONAL
+);
 ```
 
 
 Troubleshooting
 ---------------
 
-* Make sure you are NOT using the trial account as it has limitations
+* If you are using the trial account, make sure you understand it has some limitations. Use only the phone number you have verified. 
+* If are unable to understand a field, make sure you look at the REST documentation located `here <https://developer.telesign.com/docs/>`_.
