@@ -1,5 +1,5 @@
 TeleSign Node.js SDK
-=================
+====================
 
 TeleSign is a communications platform as a service (CPaaS) company, founded on security. Since 2005, TeleSign has
 been a trusted partner to the world’s leading websites and mobile applications, helping secure billions of end-user
@@ -25,7 +25,7 @@ npm install telesignsdk -save
 
 If you have already cloned this SDK, you can using the following command
 ```
-npm install ./path/to/sdk -save
+npm install /path/to/sdk -save
 ```
 
 Authentication
@@ -39,10 +39,10 @@ yet, sign up [here](https://portal.telesign.com/signup).
 Running Examples
 ----------------
 
-Working examples are located in the examples folder. We recommend you start here
+Working examples are located in the /examples/ folder. We recommend you start here
 
 Sample Code
-------------
+-----------
 
 After installing the SDK, begin by including the telesign SDK and declaring customerId, apiKey, rest_endpoint, and timeout variables. 
 
@@ -61,7 +61,7 @@ After installing the SDK, begin by including the telesign SDK and declaring cust
 ```
 
 Example: Messaging (SMS) 
-----------------------------------------
+------------------------
 
 Here is an example to send an SMS
 
@@ -97,7 +97,7 @@ Here is how to check the status of your SMS (eg. has the SMS been delivered?)
 ```
 
 Example: Voice Message 
--------------------------------------
+----------------------
 
 The following code will make a phone call and wait 30 seconds and then check for status the phone call
 
@@ -169,4 +169,4 @@ Troubleshooting
 ---------------
 
 * If you are using the trial account, make sure you understand it has some limitations. Use only the phone number you have verified. 
-* If are unable to understand a field, make sure you look at the REST documentation located [here](https://developer.telesign.com/docs/).
+* The definitions of the parameters are best documented in the REST API documentation located [here](https://developer.telesign.com/docs/api-docs).
