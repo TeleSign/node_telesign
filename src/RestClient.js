@@ -1,139 +1,203 @@
-const uuidV4Js = require("uuid-v4.js");
-var jsSHA = require("jssha");
-var packagejson = require('../package.json');
-var URI = require('urijs');
-const os = require('os');
+let os = require('os');
+let request = require('request');
+let uuidV4Js = require("uuid-v4.js");
+let crypto = require("crypto");
+let URI = require('urijs');
+let querystring = require('querystring');
+let packagejson = require('../package.json');
 
-const utf8 = require('utf8');
-const request = require('request');
-var querystring = require('querystring');
-
+/***
+ * The TeleSign RestClient is a generic HTTP REST client that can be extended to make
+ * requests against any of TeleSign's REST API endpoints.
+ *
+ * See https://developer.telesign.com for detailed API documentation.
+ */
 class RestClient {
-    constructor(customer_id, api_key, restEndpoint = "https://rest-api.telesign.com", timeout = 15000, user_agent, debug=false) {
-        this.customer_id = customer_id;
-        this.api_key = api_key;
-        this.restEndpoint = restEndpoint;
-        this.timeout = timeout; 
+
+    constructor(customerId,
+                apiKey,
+                restEndpoint = "https://rest-api.telesign.com",
+                timeout = 15000,
+                userAgent = null,
+                debug = false) {
+        this.customer_id = customerId;
+        this.api_key = apiKey;
+        this.restEndpoint = (restEndpoint === null ? "https://rest-api.telesign.com": restEndpoint);
+        this.timeout = timeout;
         this.debug = debug;
 
-        try{
-            if(!user_agent){
-                this.user_agent="TeleSignSDK/ECMAScript-Node v"+packagejson.version+" "+os.arch()+"/"+os.platform()+"-v"+os.release(); // Generates a Node useragent - helpful in diagnosing errors
+        try {
+            if (userAgent === null) {
+                this.userAgent = "TeleSignSDK/ECMAScript-Node v"
+                    + packagejson.version
+                    + " "
+                    + os.arch()
+                    + "/"
+                    + os.platform()
+                    + "-v"
+                    + os.release(); // Generates a Node useragent - helpful in diagnosing errors
             }
         }
-        catch(err){
-            this.user_agent="TeleSignSDK/ECMAScript-Node v-UNKNOWN";
+        catch (err) {
+            this.userAgent = "TeleSignSDK/ECMAScript-Node v-UNKNOWN";
             console.error("WARNING: Trouble determining OS Specific information for user agent");
         }
-        if(this.debug){
-            console.log("User-Agent: "+this.user_agent);
+
+        if (this.debug) {
+            console.log("User-Agent: " + this.userAgent);
         }
-        
     }
 
-    static generateTeleSignHeaders(
-        customer_id, 
-        api_key, 
-        method_name,
-        resource,
-        url_encoded_fields,
-        date = null,
-        nonce = null
-    ){
-        if(!date) {
+
+    /***
+     * Generates the TeleSign REST API headers used to authenticate requests.
+     *
+     * Creates the canonicalized string_to_sign and generates the HMAC signature. This is used to
+     * authenticate requests against the TeleSign REST API.
+     *
+     * See https://developer.telesign.com/docs/authentication for detailed API documentation.
+     *
+     * @param customerId: Your account customer_id.
+     * @param apiKey: Your account api_key.
+     * @param methodName: The HTTP method name of the request as a upper case string, should be one
+     * of 'POST', 'GET', 'PUT' or 'DELETE'.
+     * @param resource: The partial resource URI to perform the request against, as a string.
+     * @param urlEncodedFields: HTTP body parameters to perform the HTTP request with, must be a
+     * urlencoded string.
+     * @param date: The date and time of the request formatted in rfc 2616, as a string.
+     * @param nonce: A unique cryptographic nonce for the request, as a string.
+     * @param userAgent: (optional) User Agent associated with the request, as a string.
+     * @returns {{Authorization: string, Date: *, Content-Type: string, x-ts-auth-method: string,
+     * x-ts-nonce: *}}
+     */
+    static generateTeleSignHeaders(customerId,
+                                   apiKey,
+                                   methodName,
+                                   resource,
+                                   urlEncodedFields,
+                                   date = null,
+                                   nonce = null,
+                                   userAgent = null) {
+
+        if (date == null) {
             date = (new Date()).toUTCString();
         }
-        
-        if(!nonce) {
+
+        if (nonce == null) {
             nonce = uuidV4Js(); // generates a Random NONCE (Number Used Only Once)
         }
 
-        var content_type = (method_name=="POST" || method_name=="PUT")? "application/x-www-form-urlencoded" : "";
-        var auth_method = "HMAC-SHA256";
+        var contentType = (methodName == "POST" || methodName == "PUT") ?
+            "application/x-www-form-urlencoded" : "";
+        var authMethod = "HMAC-SHA256";
 
-        var urlencoded="";
-        if(url_encoded_fields != null && url_encoded_fields.length > 0){
-            urlencoded="\n"+url_encoded_fields;
+        var urlencoded = "";
+        if (urlEncodedFields != null && urlEncodedFields.length > 0) {
+            urlencoded = os.EOL + urlEncodedFields;
         }
-        var string_to_sign_builder = method_name+
-                                    "\n"+content_type+
-                                    "\n"+date+
-                                    "\n"+"x-ts-auth-method:"+auth_method+
-                                    "\n"+"x-ts-nonce:"+nonce+
-                                    urlencoded+ // note, \n is already incorporated
-                                    "\n"+resource;
+        var string_to_sign_builder = methodName +
+            os.EOL + contentType +
+            os.EOL + date +
+            os.EOL + "x-ts-auth-method:" + authMethod +
+            os.EOL + "x-ts-nonce:" + nonce +
+            urlencoded +
+            os.EOL + resource;
 
-        const signed_str_utf8 = utf8.encode(string_to_sign_builder); // TODO: check if this step is required
+        var signed_str_utf8 = string_to_sign_builder.toString('utf8');
+        var decodedAPIKey = Buffer.from(apiKey, 'base64');
 
-        //console.log(signed_str_utf8);
+        var jsSignature = crypto.createHmac("sha256", decodedAPIKey)
+            .update(signed_str_utf8)
+            .digest("base64")
+            .toString('utf8');
+        // console.log("js Signature: " + jsSignature);
 
-        var shaObj = new jsSHA("SHA-256", "TEXT");
-        shaObj.setHMACKey(api_key, "B64");
-        shaObj.update(signed_str_utf8);
-        var jsSignature = shaObj.getHMAC("B64");
-        var authorization = "TSA "+customer_id+":"+jsSignature;
+        var authorization = "TSA " + customerId + ":" + jsSignature;
         var headers = {
-                "Authorization": authorization, 
-                "Date": date, 
-                "Content-Type":content_type, 
-                "x-ts-auth-method":auth_method, 
-                "x-ts-nonce":nonce 
-            };
-        if(this.user_agent!=null) headers["User-Agent"] = this.user_agent;
+            "Authorization": authorization,
+            "Date": date,
+            "Content-Type": contentType,
+            "x-ts-auth-method": authMethod,
+            "x-ts-nonce": nonce
+        };
+        if (userAgent != null)
+            headers["User-Agent"] = userAgent;
+
         return headers;
     } // method generateTeleSignHeaders
 
-    execute(callback, methodName, resource, params=null){
+
+    /***
+     * Generic TeleSign REST API request handler.
+     *
+     * @param callback: Callback method to handle response.
+     * @param methodName: The HTTP method name, as an upper case string.
+     * @param resource: The partial resource URI to perform the request against, as a string.
+     * @param params: Body params to perform the HTTP request with, as a dictionary.
+     */
+    execute(callback, methodName, resource, params = null) {
         var telesign_url = this.restEndpoint + resource;
         var bodyData = null;
-        if (methodName=="POST" || methodName=="PUT"){
-            if(params!=null && Object.keys(params).length>0){
+        if (methodName == "POST" || methodName == "PUT") {
+            if (params != null && Object.keys(params).length > 0) {
                 bodyData = querystring.stringify(params);
-                if(this.debug){
-                    console.log("POST/Put Params: "+ bodyData);
-                };                
+                if (this.debug) {
+                    console.log("POST/Put Params: " + bodyData);
+                }
             }
         }
-        else{ // GET method
-            if(params!=null){
-                telesign_url=URI(this.restEndpoint+resource).query(params);
+        else { // GET method
+            if (params != null) {
+                telesign_url = URI(this.restEndpoint + resource).query(params);
             }
-            else{
-                telesign_url=URI(this.restEndpoint+resource).toString();
+            else {
+                telesign_url = URI(this.restEndpoint + resource).toString();
             }
         }
 
-        var headers = RestClient.generateTeleSignHeaders(this.customer_id, this.api_key, methodName, 
-                                                         resource, bodyData, null, null);
+        var headers = RestClient.generateTeleSignHeaders(this.customer_id,
+            this.api_key,
+            methodName,
+            resource,
+            bodyData,
+            null,
+            null,
+            this.userAgent);
 
         var requestParams = {
             headers: headers,
             uri: telesign_url,
             method: methodName
+        };
+
+        if (bodyData != null) {
+            requestParams.body = bodyData;
         }
-
-        if(bodyData!=null){ requestParams.body=bodyData;};
-
-        if(this.debug){
+        if (this.debug) {
             console.log(requestParams);
         }
 
         request(requestParams, function (err, res, bodyStr) {
-                if(err){
-                    console.error("FATAL ERROR: " +Date()+" Problems contacting Telesign Servers. Check your internet connection.");
-                    if(this.debug){
-                        console.log(err);
-                        console.log(res);
-                    }
-                    callback(err, bodyStr);
 
+            if (err) {
+
+                console.error("FATAL ERROR: "
+                    + Date()
+                    + " Problems contacting Telesign Servers. Check your internet connection.");
+
+                if (this.debug) {
+                    console.log(err);
+                    console.log(res);
                 }
-                if(res){
-                    var body=JSON.parse(bodyStr);
-                    callback(err, body);
-                }
+                callback(err, bodyStr);
+
+            }
+            if (res) {
+                var body = JSON.parse(bodyStr);
+                callback(err, body);
+            }
         });
-        
+
     }
 }
 
