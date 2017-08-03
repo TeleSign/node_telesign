@@ -14,6 +14,7 @@ class MessagingClient extends RestClient {
                 userAgent = null,
                 debug = false) {
         super(customerId, apiKey, restEndpoint, timeout, userAgent, debug);
+        if(debug){console.log("Init MessagingClient")}
         this.messaging_resource = "/v1/messaging";
         this.messaging_status_resource = "/v1/messaging/";
     }

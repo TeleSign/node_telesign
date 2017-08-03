@@ -1,8 +1,5 @@
-let readline = require('readline');
-let telesign = require('../../src/main');
-
-const CUSTOMER_ID = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
-const API_KEY = "EXAMPLE----TE8sTgg45yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==";
+const readline = require('readline');
+const telesign = require('../telesign_config');
 
 const phoneNumber = "phone-number";
 const messageType = "ARN";
@@ -21,11 +18,10 @@ function message_callback(error, response_body) {
     }
 }
 
-messaging = new telesign.MessagingClient(CUSTOMER_ID, API_KEY);
-messaging.sendMessage(message_callback, phoneNumber, message, messageType);
+telesign.sms.sendMessage(message_callback, phoneNumber, message, messageType);
 
 function prompt(question, callback) {
-    let stdin = process.stdin,
+    const stdin = process.stdin,
         stdout = process.stdout;
 
     stdin.resume();

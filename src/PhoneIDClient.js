@@ -13,6 +13,8 @@ class PhoneIDClient extends RestClient {
                 useragent = null,
                 debug = false) {
         super(customerId, apiKey, restEndpoint, timeout, useragent, debug);
+        if(debug){console.log("Init PhoneID")}
+        
         this.phoneid_resource = "/v1/phoneid/";
     }
 

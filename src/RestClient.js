@@ -1,10 +1,10 @@
-let os = require('os');
-let request = require('request');
-let uuidV4Js = require("uuid-v4.js");
-let crypto = require("crypto");
-let URI = require('urijs');
-let querystring = require('querystring');
-let packagejson = require('../package.json');
+const os = require('os');
+const request = require('request');
+const uuidV4Js = require("uuid-v4.js");
+const crypto = require("crypto");
+const URI = require('urijs');
+const querystring = require('querystring');
+const packagejson = require('../package.json');
 
 /***
  * The TeleSign RestClient is a generic HTTP REST client that can be extended to make
@@ -26,16 +26,14 @@ class RestClient {
         this.timeout = timeout;
         this.debug = debug;
 
+        if(debug){console.log("Init PhoneId Client")}
+
         try {
             if (userAgent === null) {
-                this.userAgent = "TeleSignSDK/ECMAScript-Node v"
-                    + packagejson.version
-                    + " "
-                    + os.arch()
-                    + "/"
-                    + os.platform()
-                    + "-v"
-                    + os.release(); // Generates a Node useragent - helpful in diagnosing errors
+                this.userAgent = `TeleSignSDK/ECMAScript-Node v ${packagejson.version}`
+                                 +` ${os.arch()}`
+                                 +`/${os.platform()}`
+                                 +`-v${os.release()}`; // Generates a Node useragent - helpful in diagnosing errors
             }
         }
         catch (err) {
@@ -181,9 +179,8 @@ class RestClient {
 
             if (err) {
 
-                console.error("FATAL ERROR: "
-                    + Date()
-                    + " Problems contacting Telesign Servers. Check your internet connection.");
+                console.error(`FATAL ERROR: ${Date()}`
+                    +` Problems contacting Telesign Servers. Check your internet connection.`);
 
                 if (this.debug) {
                     console.log(err);

@@ -1,14 +1,11 @@
-let telesign = require('../../src/main');
-
-const CUSTOMER_ID = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
-const API_KEY = "EXAMPLE----TE8sTgg45yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==";
+const telesign = require('../telesign_config');
 
 const phoneNumber = "phone-number";
 const message = "You're scheduled for a dentist appointment at 2:30PM.";
 const messageType = "ARN";
 
 
-console.log("## MessagingClient.sendMessage ##");
+console.log("## VoiceClient.call ##");
 
 function voice_callback(error, response_body) {
     if (error === null) {
@@ -20,5 +17,4 @@ function voice_callback(error, response_body) {
     }
 }
 
-voice = new telesign.VoiceClient(CUSTOMER_ID, API_KEY);
-voice.call(voice_callback, phoneNumber, message, messageType);
+telesign.voice.call(voice_callback, phoneNumber, message, messageType);

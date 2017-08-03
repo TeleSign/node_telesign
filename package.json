@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/TeleSign/node_telesign"
   },
-  "main": "src/main.js",
+  "main": "src/TeleSign.js",
   "scripts": {
     "test": "node ./test/test-RestClient.js | tap-spec",
     "code-cov": "istanbul cover ./test/test-RestClient.js"
@@ -30,12 +30,15 @@
     "voice",
     "twofactor",
     "2factor",
+    "authenticate",
+    "authentication",
     "phone",
     "call",
     "text",
     "AppVerify",
     "2FA",
-    "Twilio"
+    "Twilio",
+    "Nexmo"
   ],
   "author": "TeleSign Corp.",
   "email": "sdk@telesign.com",

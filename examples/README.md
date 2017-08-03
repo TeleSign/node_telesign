@@ -1,3 +1,18 @@
+TeleSign Node.js SDK Examples
+=============================
+
+**How to Run**
+
+1. Edit file and replace values for API Key, Customer ID, and mobile_number
+2. Run the file via : node filename.js
+
+Example: You can run the 1_send_message.js with the following command
+
+```
+node examples/appverify/1_get_status_by_xid.js
+```
+
+
 Node Example
 ============
 
@@ -7,14 +22,14 @@ timeout variables
 ```javascript
     var TeleSignSDK = require('telesignsdk');
     var customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890"; // find in portal.telesign.com
-    var apiKey = "EXAMPLE----TE8sTgg45yusumoN4BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw=="; 
+    var apiKey = "EXAMPLE----TE8sTgg45yusumoN4BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==";
     var restEndpoint = "https://rest-api.telesign.com";
     var timeout = 10*1000; // 10 secs
 
 ```
 
 
-Example: Messaging (SMS) 
+Example: Messaging (SMS)
 ----------------------------------------
 
 Here is an example to send an SMS
@@ -26,7 +41,7 @@ Here is an example to send an SMS
     var messageType = "ARN"; // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
     var referenceId = null;
     var accountLifecycleEvent = "create"
-    
+
     var messaging = new TeleSignSDK.MessagingClient(customerID, apiKeys, restEndpoint, timeout);
 
     messaging.sendMessage(function(err, response) {
@@ -36,7 +51,7 @@ Here is an example to send an SMS
         else{
             console.log("YAY!, the SMS message is being sent now by TeleSign!");
             console.log(response);
-            referenceId=response.referenceId; // save the referenceId to check status of the message 
+            referenceId=response.referenceId; // save the referenceId to check status of the message
         }
     }, phoneNumber, message, messageType);
 ```
@@ -59,7 +74,7 @@ Here is how to check the status of your SMS
 ```
 
 
-Example: Voice Message 
+Example: Voice Message
 -------------------------------------
 
 The following code will make a phone call and wait 30 seconds and then check for status the phone call
@@ -76,9 +91,9 @@ The following code will make a phone call and wait 30 seconds and then check for
                 console.log(statusResponse);
             }, callResponse.referenceId)
         },30*1000); // wait 10 secs and see the status of the call
-    },  phoneNumber, 
-        message, 
-        messageType, 
+    },  phoneNumber,
+        message,
+        messageType,
         language, // optional param
         callbackURL, // optional param
         accountLifecycleEvent); // optional param
@@ -98,7 +113,7 @@ The following code will retreive metadata on a phone number using the PhoneID AP
 
     phoneid.getPhoneID(function(err, phoneidResponse) {
         console.log(phoneidResponse);
-    }, 
+    },
     phoneNumber,
     accountLifecycleEvent, // optional param
     originatingIP); // optional param
@@ -113,7 +128,7 @@ Example: Score API (Metadata on phone number for fraud risk analysis)
     var accountLifecycleEvent = "create";
     score.getScore(function(err, response) {
         console.log(response);
-    },  "13109991964", 
+    },  "13109991964",
         accountLifecycleEvent
         // originatingIP,   // optional param
         // deviceId,       // optional param

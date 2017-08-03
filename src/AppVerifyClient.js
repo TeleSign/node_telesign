@@ -13,6 +13,7 @@ class AppVerifyClient extends RestClient {
                 userAgent = null,
                 debug = false) {
         super(customerId, apiKey, restEndpoint, timeout, userAgent, debug);
+        if(debug){console.log("Init AppVerify Client")}
         this.appverify_resource = "/v1/mobile/verification/status/";
     }
 

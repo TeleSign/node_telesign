@@ -9,12 +9,13 @@ class VoiceClient extends RestClient {
 
     constructor(customerId, apiKey, restEndpoint = null, timeout = 15000, useragent = null, debug = false) {
         super(customerId, apiKey, restEndpoint, timeout, useragent, debug);
+        if(debug){console.log("Init Voice Client")}
+
         this.voice_resource = "/v1/voice";
         this.voice_status_resource = "/v1/voice/"
     }
-
-    /***
-     * Send a voice call to the target phone_number.
+   /***
+     * Send a voice callto the target phone_number.
      *
      * See https://developer.telesign.com/docs/voice-api for detailed API documentation.
      *
@@ -34,18 +35,14 @@ class VoiceClient extends RestClient {
     call(callback,
          phoneNumber,
          message,
-         messageType,
-         voice = null,
-         callbackURL = null,
-         accountLifecycleEvent = null,
-         originatingIP = null) {
-
+         messageType, voice = null, callbackURL = null, accountLifecycleEvent = null, originatingIP = null, debug=false){
+        if(debug){console.log("Calling "+phone_number)};
         var params = {
-            phone_number: phoneNumber,
-            message: message,
-            message_type: messageType
+            phone_number : phoneNumber,
+            message :  message,
+            message_type : messageType
         };
-        if (voice != null) {
+        if(voice!=null){
             params.voice = voice;
         }
         if (callbackURL != null) {
@@ -60,15 +57,15 @@ class VoiceClient extends RestClient {
 
         this.execute(callback, "POST", this.voice_resource, params);
     }
-
-    /***
+/***
      * Get status of voice call transaction.
      *
      * @param callback: Callback method to handle the response.
      * @param referenceId: Reference ID received in the response of call.
-     */
-    getCallStatus(callback, referenceId) {
-        var status_resource = this.voice_status_resource + referenceId;
+     */    getCallStatus(callback, referenceId, debug = false){
+        if(debug){console.log("Retreving Call Status for "+referenceId)}
+
+        var status_resource = this.voice_status_resource+referenceId;
         this.execute(callback, "GET", status_resource);
     }
 }

@@ -1,11 +1,11 @@
-let test = require('tape');
-let telesign = require('../src/main');
-let uuidV4Js = require("uuid-v4.js");
+const test = require('tape');
+const telesign = require('../src/main');
+const uuidV4Js = require("uuid-v4.js");
 
 const CUSTOMER_ID = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
 const API_KEY = 'VGVzdCBLZXk=';
 
-let proxy = require('proxyrequire');
+const proxy = require('proxyrequire');
 
 const Stub = proxy.proxy(() => require('../src/RestClient').request, {
     'stubbed_request': {'error': null, body: {'status': 200}},
