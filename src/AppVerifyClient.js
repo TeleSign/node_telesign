@@ -1,4 +1,4 @@
-var RestClient = require("./RestClient.js");
+const RestClient = require("./RestClient.js");
 
 /***
  * App Verify is a secure, lightweight SDK that integrates a frictionless user verification
@@ -13,7 +13,10 @@ class AppVerifyClient extends RestClient {
                 userAgent = null,
                 debug = false) {
         super(customerId, apiKey, restEndpoint, timeout, userAgent, debug);
-        if(debug){console.log("Init AppVerify Client")}
+
+        if (debug) {
+            console.log("Init AppVerify Client")
+        }
         this.appverify_resource = "/v1/mobile/verification/status/";
     }
 

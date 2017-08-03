@@ -1,5 +1,5 @@
 const test = require('tape');
-const telesign = require('../src/main');
+const RestClient = require('../src/RestClient');
 const uuidV4Js = require("uuid-v4.js");
 
 const CUSTOMER_ID = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
@@ -13,7 +13,7 @@ const Stub = proxy.proxy(() => require('../src/RestClient').request, {
 
 // Tests ---
 test('Test REST Client constructor', (assert) => {
-    const rc = new telesign.RestClient(CUSTOMER_ID, API_KEY);
+    const rc = new RestClient(CUSTOMER_ID, API_KEY);
 
     assert.equal(rc.customer_id, CUSTOMER_ID, 'Customer ID set correctly');
     assert.equal(rc.api_key, API_KEY, 'API Key set correctly');
@@ -32,7 +32,7 @@ test('Test generate Telesign headers with POST', (assert) => {
     const expectedAuthorizationHeader =
         'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:vXw/XzywdhgfEG2/zWLaFp7oXmjLB8iJDMndvDbZMjk=';
 
-    const actualHeaders = telesign.RestClient.generateTeleSignHeaders(CUSTOMER_ID,
+    const actualHeaders = RestClient.generateTeleSignHeaders(CUSTOMER_ID,
         API_KEY,
         method,
         resource,
@@ -57,7 +57,7 @@ test('Test generate telesign headers unicode content', (assert) => {
     const expectedAuthorizationHeader =
         'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:lPpGXw4jTRdaEp2obzYAD5rR+2aWDInJ8ThLbq0nTGU=';
 
-    const actualHeaders = telesign.RestClient.generateTeleSignHeaders(CUSTOMER_ID,
+    const actualHeaders = RestClient.generateTeleSignHeaders(CUSTOMER_ID,
         API_KEY,
         method,
         resource,
@@ -82,7 +82,7 @@ test('Test generate telesign headers with GET', (assert) => {
     expectedAuthorizationHeader =
         'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:wscyrZZtA7kdXu0i4D5KXyDmBcwH52JF1feiEKp+ir0=';
 
-    const actualHeaders = telesign.RestClient.generateTeleSignHeaders(CUSTOMER_ID,
+    const actualHeaders = RestClient.generateTeleSignHeaders(CUSTOMER_ID,
         API_KEY,
         method,
         resource,
@@ -101,7 +101,7 @@ test('Test generate telesign headers default date and nonce', (assert) => {
     method = 'GET';
     resource = '/v1/resource';
 
-    const actualHeaders = telesign.RestClient.generateTeleSignHeaders(CUSTOMER_ID,
+    const actualHeaders = RestClient.generateTeleSignHeaders(CUSTOMER_ID,
         API_KEY,
         method,
         resource,
@@ -132,7 +132,7 @@ test('Test generate telesign headers default date and nonce', (assert) => {
 //     testResources = '/test/resource';
 //     testParams = {'test': '123_\u03ff_test'};
 //
-//     rc = new telesign.RestClient(CUSTOMER_ID, API_KEY, restEndpoint = testHost);
+//     rc = new RestClient(CUSTOMER_ID, API_KEY, restEndpoint = testHost);
 //     rc.execute(test_callback, 'POST', testResources, params = testParams);
 //
 //     assert.end();

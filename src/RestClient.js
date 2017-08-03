@@ -22,18 +22,20 @@ class RestClient {
                 debug = false) {
         this.customer_id = customerId;
         this.api_key = apiKey;
-        this.restEndpoint = (restEndpoint === null ? "https://rest-api.telesign.com": restEndpoint);
+        this.restEndpoint = (restEndpoint === null ? "https://rest-api.telesign.com" : restEndpoint);
         this.timeout = timeout;
         this.debug = debug;
 
-        if(debug){console.log("Init PhoneId Client")}
+        if (debug) {
+            console.log("Init PhoneId Client")
+        }
 
         try {
             if (userAgent === null) {
                 this.userAgent = `TeleSignSDK/ECMAScript-Node v ${packagejson.version}`
-                                 +` ${os.arch()}`
-                                 +`/${os.platform()}`
-                                 +`-v${os.release()}`; // Generates a Node useragent - helpful in diagnosing errors
+                    + ` ${os.arch()}`
+                    + `/${os.platform()}`
+                    + `-v${os.release()}`; // Generates a Node useragent - helpful in diagnosing errors
             }
         }
         catch (err) {
@@ -65,8 +67,8 @@ class RestClient {
      * @param date: The date and time of the request formatted in rfc 2616, as a string.
      * @param nonce: A unique cryptographic nonce for the request, as a string.
      * @param userAgent: (optional) User Agent associated with the request, as a string.
-     * @returns {{Authorization: string, Date: *, Content-Type: string, x-ts-auth-method: string,
-     * x-ts-nonce: *}}
+     * @returns headers: {{Authorization: string, Date: *, Content-Type: string,
+     * x-ts-auth-method: string, x-ts-nonce: *}}
      */
     static generateTeleSignHeaders(customerId,
                                    apiKey,
@@ -179,8 +181,8 @@ class RestClient {
 
             if (err) {
 
-                console.error(`FATAL ERROR: ${Date()}`
-                    +` Problems contacting Telesign Servers. Check your internet connection.`);
+                console.error(`FATAL ERROR: ${new Date()}`
+                    + ` Problems contacting Telesign Servers. Check your internet connection.`);
 
                 if (this.debug) {
                     console.log(err);

@@ -1,16 +1,25 @@
-var RestClient = require('./RestClient.js');
+const RestClient = require('./RestClient.js');
 
 /***
  * Score provides risk information about a specified phone number.
  */
 class ScoreClient extends RestClient {
-    constructor(customerId, apiKey, restEndpoint = null, timeout = 15000, userAgent = null, debug=false) {
+    constructor(customerId,
+                apiKey,
+                restEndpoint = null,
+                timeout = 15000,
+                userAgent = null,
+                debug = false) {
+
         super(customerId, apiKey, restEndpoint, timeout, userAgent);
-        if(debug){console.log("Init Score Client")}
+        if (debug) {
+            console.log("Init Score Client")
+        }
 
         this.score_resource = "/v1/score/";
     }
-/***
+
+    /***
      * Score is an API that delivers reputation scoring based on phone number intelligence,
      * traffic patterns, machine learning, and a global data consortium.
      *
@@ -24,8 +33,20 @@ class ScoreClient extends RestClient {
      * @param deviceId: (Optional) End user’s device identifier.
      * @param accountId: (Optional) End user’s account id
      * @param emailAddress: (Optional) End user’s email address
-     */    getScore(callback, phoneNumber, accountLifecycleEvent, originatingIP=null, deviceId=null, accountId=null, emailAddress=null, debug=false){
-        if(debug){console.log("Retreving score for "+phone_number)}
+     * @param debug: Adds debug logs
+     */    getScore(callback,
+                    phoneNumber,
+                    accountLifecycleEvent,
+                    originatingIP = null,
+                    deviceId = null,
+                    accountId = null,
+                    emailAddress = null,
+                    debug = false) {
+
+        if (debug) {
+            console.log("Retreving score for " + phone_number)
+        }
+
         var params = {
             account_lifecycle_event: accountLifecycleEvent
         };

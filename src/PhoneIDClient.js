@@ -1,4 +1,4 @@
-var RestClient = require("./RestClient.js");
+const RestClient = require("./RestClient.js");
 
 /***
  * A set of APIs that deliver deep phone number data attributes that help optimize the end user
@@ -13,8 +13,11 @@ class PhoneIDClient extends RestClient {
                 useragent = null,
                 debug = false) {
         super(customerId, apiKey, restEndpoint, timeout, useragent, debug);
-        if(debug){console.log("Init PhoneID")}
-        
+
+        if (debug) {
+            console.log("Init PhoneID")
+        }
+
         this.phoneid_resource = "/v1/phoneid/";
     }
 
