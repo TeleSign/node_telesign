@@ -11,20 +11,15 @@ class VoiceClient extends RestClient {
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
-                useragent = null,
-                debug = false) {
-        super(customerId, apiKey, restEndpoint, timeout, useragent, debug);
-
-        if (debug) {
-            console.log("Init Voice Client")
-        }
+                useragent = null) {
+        super(customerId, apiKey, restEndpoint, timeout, useragent);
 
         this.voice_resource = "/v1/voice";
         this.voice_status_resource = "/v1/voice/"
     }
 
     /***
-     * Send a voice callto the target phone_number.
+     * Send a voice callto the target phoneNumber.
      *
      * See https://developer.telesign.com/docs/voice-api for detailed API documentation.
      *
@@ -40,7 +35,6 @@ class VoiceClient extends RestClient {
      * @param accountLifecycleEvent: (Optional) Indicates the phase in lifecycle for the
      * transaction.
      * @param originatingIP: (Optional) End user's IP address.
-     * @param debug: Adds debug logs
      */
     call(callback,
          phoneNumber,
@@ -49,12 +43,7 @@ class VoiceClient extends RestClient {
          voice = null,
          callbackURL = null,
          accountLifecycleEvent = null,
-         originatingIP = null,
-         debug = false) {
-
-        if (debug) {
-            console.log("Calling " + phone_number)
-        }
+         originatingIP = null) {
 
         var params = {
             phone_number: phoneNumber,
@@ -82,11 +71,8 @@ class VoiceClient extends RestClient {
      *
      * @param callback: Callback method to handle the response.
      * @param referenceId: Reference ID received in the response of call.
-     * @param debug: Adds debug logs
-     */    getCallStatus(callback, referenceId, debug = false) {
-        if (debug) {
-            console.log("Retreving Call Status for " + referenceId)
-        }
+     */
+    status(callback, referenceId) {
 
         var status_resource = this.voice_status_resource + referenceId;
         this.execute(callback, "GET", status_resource);

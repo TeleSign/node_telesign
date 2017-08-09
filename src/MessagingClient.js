@@ -11,19 +11,15 @@ class MessagingClient extends RestClient {
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
-                userAgent = null,
-                debug = false) {
-        super(customerId, apiKey, restEndpoint, timeout, userAgent, debug);
+                userAgent = null) {
+        super(customerId, apiKey, restEndpoint, timeout, userAgent);
 
-        if (debug) {
-            console.log("Init MessagingClient")
-        }
         this.messaging_resource = "/v1/messaging";
         this.messaging_status_resource = "/v1/messaging/";
     }
 
     /***
-     * Send a message to the target phone_number.
+     * Send a message to the target phoneNumber.
      *
      * See https://developer.telesign.com/docs/messaging-api for detailed API documentation.
      *
@@ -33,13 +29,13 @@ class MessagingClient extends RestClient {
      * @param messageType: This parameter specifies the traffic type being sent in the message.
      * transaction.
      */
-    sendMessage(callback, phoneNumber, message, messageType) {
+    message(callback, phoneNumber, message, messageType) {
         var params = {
             phone_number: phoneNumber,
             message: message,
             message_type: messageType
         };
-        this.execute(callback, "POST", this.messaging_resource, params, this.debug);
+        this.execute(callback, "POST", this.messaging_resource, params);
     }
 
     /***
@@ -48,12 +44,11 @@ class MessagingClient extends RestClient {
      * @param callback: Callback method to handle the response.
      * @param referenceId: Reference ID received in the response of message.
      */
-    getMessageStatus(callback, referenceId) {
+    status(callback, referenceId) {
         this.execute(callback,
             "GET",
             this.messaging_status_resource + referenceId,
-            null,
-            this.debug);
+            null);
     }
 }
 

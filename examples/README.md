@@ -9,15 +9,15 @@ TeleSign Node.js SDK Examples
 Example: You can run the 1_send_message.js with the following command
 
 ```
-node examples/appverify/1_get_status_by_xid.js
+node examples/appverify/1_send_message.js
 ```
 
 
-Node Example
-============
+Sample Code
+-----------
 
 After installing the SDK, begin by including the telesign SDK and declaring customerId, apiKey, restEndpoint, and
-timeout variables
+timeout variables.
 
 ```javascript
     var TeleSignSDK = require('telesignsdk');
@@ -26,6 +26,11 @@ timeout variables
     var restEndpoint = "https://rest-api.telesign.com";
     var timeout = 10*1000; // 10 secs
 
+    var telesign = new TeleSignSDK( customerId,
+                                    apiKey,
+                                    restEndpoint,
+                                    timeout // optional
+                                  );
 ```
 
 
@@ -35,34 +40,34 @@ Example: Messaging (SMS)
 Here is an example to send an SMS
 
 ```javascript
-    var phoneNumber = "12125555555"; // Your end user’s phone number, as a string of digits without spaces or
-    punctuation, beginning with the country dialing code (for example, “1” for North America)
+    var phoneNumber = "phone_number"; // Your end user’s phone number, as a string of digits without spaces or
+    // punctuation, beginning with the country dialing code (for example, “1” for North America)
     var message = "You're scheduled for a dentist appointment at 2:30PM.";
     var messageType = "ARN"; // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
-    var referenceId = null;
-    var accountLifecycleEvent = "create"
+    var referenceId = null; // need this to check status later
 
-    var messaging = new TeleSignSDK.MessagingClient(customerID, apiKeys, restEndpoint, timeout);
-
-    messaging.sendMessage(function(err, response) {
-        if(err) {
-            console.error(err); // network failure likely cause for error
-        }
-        else{
-            console.log("YAY!, the SMS message is being sent now by TeleSign!");
-            console.log(response);
-            referenceId=response.referenceId; // save the referenceId to check status of the message
-        }
-    }, phoneNumber, message, messageType);
+    telesign.sms.message(function(err, reply){
+            if(err){
+                console.log("Error: Could not reach TeleSign's servers");
+                console.error(err); // network failure likely cause for error
+            }
+            else{
+                console.log("YAY!, the SMS message is being sent now by TeleSign!");
+                console.log(reply);
+                referenceId=reply.reference_id; // save the reference_id to check status of the message
+            }
+        },
+        phoneNumber,
+        message,
+        messageType
+    );
 ```
 
 Here is how to check the status of your SMS
 
 ```javascript
 
-    var messaging = new TeleSignSDK.MessagingClient(customerID, apiKeys, restEndpoint, timeout);
-
-    messaging.getMessageStatus(function(err, statusResponse) {
+    telesign.sms.status(function(err, statusResponse) {
 
         if(err) {
             console.error(err); // network failure likely cause for error
@@ -82,19 +87,25 @@ The following code will make a phone call and wait 30 seconds and then check for
 ```javascript
     var voice = new TeleSignSDK.VoiceClient(customerID, apiKeys, restEndpoint, timeout);
     var language = "en-GB" // British English - full list avail in REST docs ai developer.telesign.com
-    var callbackURL = "http://www.mydomain.com/callback";
+    var callbackURL = "http://www.test.com/callback";
     var accountLifecycleEvent = "create"; // see options in API docs at developer.telesign.com
 
-    voice.call(function(err, callResponse) {
-        setTimeout(function() {
-            voice.getCallStatus(function(err, statusResponse) {
-                console.log(statusResponse);
-            }, callResponse.referenceId)
-        },30*1000); // wait 10 secs and see the status of the call
+    var referenceId = null; // To be used to get call status later
+
+    telesign.voice.call(function(err, callResponse) {
+        if(err){
+            console.log("Error: Could not reach TeleSign's servers");
+            console.error(err); // network failure likely cause for error
+        }
+        else{
+            console.log("YAY!, TeleSign is attempting to call the number provided!");
+            console.log(callResponse);
+            reference_id=callResponse.reference_id; // save the reference_id to check status of the message
+        }
     },  phoneNumber,
         message,
         messageType,
-        language, // optional param
+        voice, // optional param - if null, it will select US English
         callbackURL, // optional param
         accountLifecycleEvent); // optional param
 
@@ -109,9 +120,9 @@ The following code will retreive metadata on a phone number using the PhoneID AP
 ```javascript
     var phoneid = new TeleSignSDK.PhoneIDClient(customerID, apiKeys, restEndpoint, timeout);
     var accountLifecycleEvent = "create"; // see options in API docs at developer.telesign.com
-    var originatingIP = "203.0.113.45";
+    var originatingIP = "1.0.0.1";
 
-    phoneid.getPhoneID(function(err, phoneidResponse) {
+    telesign.phoneid.phoneID(function(err, phoneidResponse) {
         console.log(phoneidResponse);
     },
     phoneNumber,
@@ -126,9 +137,10 @@ Example: Score API (Metadata on phone number for fraud risk analysis)
 ```javascript
     var score = new TeleSignSDK.ScoreClient(customerID, apiKeys, restEndpoint, 10*1000);
     var accountLifecycleEvent = "create";
-    score.getScore(function(err, response) {
+
+    telesign.score.score(function(err, response) {
         console.log(response);
-    },  "13109991964",
+    },  phoneNumber,
         accountLifecycleEvent
         // originatingIP,   // optional param
         // deviceId,       // optional param
@@ -136,9 +148,3 @@ Example: Score API (Metadata on phone number for fraud risk analysis)
     );
 
 ```
-
-
-Further reading
----------------
-
-For more documentation visit the `TeleSign Developer Center <https://developer.telesign.com/>`_.

@@ -10,18 +10,13 @@ module.exports = class TeleSign {
                 apiKey,
                 restEndpoint = "https://rest-api.telesign.com",
                 timeout = 15000,
-                useragent = null,
-                debug = false) {
+                useragent = null) {
 
-        if (debug == true) {
-            console.log("Init TeleSign SDK")
-        }
-
-        this.rest = new RestClient(customerId, apiKey, restEndpoint, timeout, useragent, debug);
-        this.sms = new MessagingClient(customerId, apiKey, restEndpoint, timeout, useragent, debug);
-        this.voice = new VoiceClient(customerId, apiKey, restEndpoint, timeout, useragent, debug);
-        this.score = new ScoreClient(customerId, apiKey, restEndpoint, timeout, useragent, debug);
-        this.phoneid = new PhoneIDClient(customerId, apiKey, restEndpoint, timeout, useragent, debug);
-        this.appverify = new AppVerifyClient(customerId, apiKey, restEndpoint, timeout, useragent, debug);
+        this.rest = new RestClient(customerId, apiKey, restEndpoint, timeout, useragent);
+        this.sms = new MessagingClient(customerId, apiKey, restEndpoint, timeout, useragent);
+        this.voice = new VoiceClient(customerId, apiKey, restEndpoint, timeout, useragent);
+        this.score = new ScoreClient(customerId, apiKey, restEndpoint, timeout, useragent);
+        this.phoneid = new PhoneIDClient(customerId, apiKey, restEndpoint, timeout, useragent);
+        this.appverify = new AppVerifyClient(customerId, apiKey, restEndpoint, timeout, useragent);
     }
 };

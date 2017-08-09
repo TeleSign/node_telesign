@@ -8,15 +8,11 @@ class ScoreClient extends RestClient {
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
-                userAgent = null,
-                debug = false) {
+                userAgent = null) {
 
         super(customerId, apiKey, restEndpoint, timeout, userAgent);
-        if (debug) {
-            console.log("Init Score Client")
-        }
 
-        this.score_resource = "/v1/score/";
+        this.scoreResource = "/v1/score/";
     }
 
     /***
@@ -33,19 +29,14 @@ class ScoreClient extends RestClient {
      * @param deviceId: (Optional) End user’s device identifier.
      * @param accountId: (Optional) End user’s account id
      * @param emailAddress: (Optional) End user’s email address
-     * @param debug: Adds debug logs
-     */    getScore(callback,
-                    phoneNumber,
-                    accountLifecycleEvent,
-                    originatingIP = null,
-                    deviceId = null,
-                    accountId = null,
-                    emailAddress = null,
-                    debug = false) {
-
-        if (debug) {
-            console.log("Retreving score for " + phone_number)
-        }
+     */
+    score(callback,
+          phoneNumber,
+          accountLifecycleEvent,
+          originatingIP = null,
+          deviceId = null,
+          accountId = null,
+          emailAddress = null) {
 
         var params = {
             account_lifecycle_event: accountLifecycleEvent
@@ -63,7 +54,7 @@ class ScoreClient extends RestClient {
             params.email_address = emailAddress;
         }
 
-        this.execute(callback, "POST", this.score_resource + encodeURI(phoneNumber), params);
+        this.execute(callback, "POST", this.scoreResource + encodeURI(phoneNumber), params);
     }
 }
 

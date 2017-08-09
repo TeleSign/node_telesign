@@ -18,17 +18,11 @@ class RestClient {
                 apiKey,
                 restEndpoint = "https://rest-api.telesign.com",
                 timeout = 15000,
-                userAgent = null,
-                debug = false) {
-        this.customer_id = customerId;
-        this.api_key = apiKey;
+                userAgent = null) {
+        this.customerId = customerId;
+        this.apiKey = apiKey;
         this.restEndpoint = (restEndpoint === null ? "https://rest-api.telesign.com" : restEndpoint);
         this.timeout = timeout;
-        this.debug = debug;
-
-        if (debug) {
-            console.log("Init PhoneId Client")
-        }
 
         try {
             if (userAgent === null) {
@@ -43,22 +37,19 @@ class RestClient {
             console.error("WARNING: Trouble determining OS Specific information for user agent");
         }
 
-        if (this.debug) {
-            console.log("User-Agent: " + this.userAgent);
-        }
     }
 
 
     /***
      * Generates the TeleSign REST API headers used to authenticate requests.
      *
-     * Creates the canonicalized string_to_sign and generates the HMAC signature. This is used to
+     * Creates the canonicalized stringToSign and generates the HMAC signature. This is used to
      * authenticate requests against the TeleSign REST API.
      *
      * See https://developer.telesign.com/docs/authentication for detailed API documentation.
      *
-     * @param customerId: Your account customer_id.
-     * @param apiKey: Your account api_key.
+     * @param customerId: Your account customerId.
+     * @param apiKey: Your account apiKey.
      * @param methodName: The HTTP method name of the request as a upper case string, should be one
      * of 'POST', 'GET', 'PUT' or 'DELETE'.
      * @param resource: The partial resource URI to perform the request against, as a string.
@@ -95,7 +86,7 @@ class RestClient {
         if (urlEncodedFields != null && urlEncodedFields.length > 0) {
             urlencoded = os.EOL + urlEncodedFields;
         }
-        var string_to_sign_builder = methodName +
+        var stringToSignBuilder = methodName +
             os.EOL + contentType +
             os.EOL + date +
             os.EOL + "x-ts-auth-method:" + authMethod +
@@ -103,11 +94,11 @@ class RestClient {
             urlencoded +
             os.EOL + resource;
 
-        var signed_str_utf8 = string_to_sign_builder.toString('utf8');
+        var signedStrUTF8 = stringToSignBuilder.toString('utf8');
         var decodedAPIKey = Buffer.from(apiKey, 'base64');
 
         var jsSignature = crypto.createHmac("sha256", decodedAPIKey)
-            .update(signed_str_utf8)
+            .update(signedStrUTF8)
             .digest("base64")
             .toString('utf8');
         // console.log("js Signature: " + jsSignature);
@@ -136,27 +127,24 @@ class RestClient {
      * @param params: Body params to perform the HTTP request with, as a dictionary.
      */
     execute(callback, methodName, resource, params = null) {
-        var telesign_url = this.restEndpoint + resource;
+        var telesignURL = this.restEndpoint + resource;
         var bodyData = null;
         if (methodName == "POST" || methodName == "PUT") {
             if (params != null && Object.keys(params).length > 0) {
                 bodyData = querystring.stringify(params);
-                if (this.debug) {
-                    console.log("POST/Put Params: " + bodyData);
-                }
             }
         }
         else { // GET method
             if (params != null) {
-                telesign_url = URI(this.restEndpoint + resource).query(params);
+                telesignURL = URI(this.restEndpoint + resource).query(params);
             }
             else {
-                telesign_url = URI(this.restEndpoint + resource).toString();
+                telesignURL = URI(this.restEndpoint + resource).toString();
             }
         }
 
-        var headers = RestClient.generateTeleSignHeaders(this.customer_id,
-            this.api_key,
+        var headers = RestClient.generateTeleSignHeaders(this.customerId,
+            this.apiKey,
             methodName,
             resource,
             bodyData,
@@ -166,15 +154,12 @@ class RestClient {
 
         var requestParams = {
             headers: headers,
-            uri: telesign_url,
+            uri: telesignURL,
             method: methodName
         };
 
         if (bodyData != null) {
             requestParams.body = bodyData;
-        }
-        if (this.debug) {
-            console.log(requestParams);
         }
 
         request(requestParams, function (err, res, bodyStr) {
@@ -184,10 +169,6 @@ class RestClient {
                 console.error(`FATAL ERROR: ${new Date()}`
                     + ` Problems contacting Telesign Servers. Check your internet connection.`);
 
-                if (this.debug) {
-                    console.log(err);
-                    console.log(res);
-                }
                 callback(err, bodyStr);
 
             }

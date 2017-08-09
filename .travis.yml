@@ -1,4 +1,11 @@
 language: node_js
 node_js:
-  - "iojs"
   - "6"
+before_install:
+  - npm i -g npm@5.3
+install:
+  - npm install
+test:
+  - npm test
+script:
+  - npm run coverage

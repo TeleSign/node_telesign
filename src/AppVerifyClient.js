@@ -10,13 +10,9 @@ class AppVerifyClient extends RestClient {
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
-                userAgent = null,
-                debug = false) {
-        super(customerId, apiKey, restEndpoint, timeout, userAgent, debug);
+                userAgent = null) {
+        super(customerId, apiKey, restEndpoint, timeout, userAgent);
 
-        if (debug) {
-            console.log("Init AppVerify Client")
-        }
         this.appverify_resource = "/v1/mobile/verification/status/";
     }
 
@@ -26,7 +22,7 @@ class AppVerifyClient extends RestClient {
      * @param callback: Callback method to handle the response.
      * @param externalId: External ID (xid) used in the JWT token during verification.
      */
-    getStatus(callback, externalId) {
+    status(callback, externalId) {
         this.execute(callback, "GET", this.appverify_resource + externalId);
     }
 }
