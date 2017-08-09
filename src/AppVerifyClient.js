@@ -26,7 +26,7 @@ class AppVerifyClient extends RestClient {
      * @param callback: Callback method to handle the response.
      * @param externalId: External ID (xid) used in the JWT token during verification.
      */
-    getStatus(callback, externalId) {
+    status(callback, externalId) {
         this.execute(callback, "GET", this.appverify_resource + externalId);
     }
 }

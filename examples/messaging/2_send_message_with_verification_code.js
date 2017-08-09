@@ -1,24 +1,24 @@
 const readline = require('readline');
-const telesign = require('../telesign_config');
+const telesign = require('../telesignClient');
 
 const phoneNumber = "phone-number";
 const messageType = "ARN";
 const verifyCode = "32658";
 const message = "Your code is " + verifyCode;
 
-console.log("## MessagingClient.sendMessage ##");
+console.log("## MessagingClient.message ##");
 
-function message_callback(error, response_body) {
+function messageCallback(error, responseBody) {
     if (error === null) {
         console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
-            ` => code: ${response_body['status']['code']}` +
-            `, description: ${response_body['status']['description']}`);
+            ` => code: ${responseBody['status']['code']}` +
+            `, description: ${responseBody['status']['description']}`);
     } else {
         console.error("Unable to send message. " + error);
     }
 }
 
-telesign.sms.sendMessage(message_callback, phoneNumber, message, messageType);
+telesign.sms.message(messageCallback, phoneNumber, message, messageType);
 
 function prompt(question, callback) {
     const stdin = process.stdin,

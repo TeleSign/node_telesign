@@ -2,8 +2,8 @@
 const TeleSignSDK = require('../src/TeleSign');
 //var TeleSignSDK = require('telesignsdk');
 
-const customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890"; // Todo: find in portal.telesign.com
-const apiKey = "EXAMPLE----TE8sTgg45yusumoN4BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw=="; // Todo: find in portal.telesign.com
+const customerId = "440813A2-1F7E-11E1-B760-000000000000"; // Todo: find in portal.telesign.com
+const apiKey = "yVG2pGeuyRXKgb8tt97Hr210FWE4c+WukHVWsNon914dQo4FTrZzxoLePeKCz27WhrSzmQncXjTvZ6U+0wGZeQ=="; // Todo: find in portal.telesign.com
 const rest_endpoint = "https://rest-api.telesign.com"; // Todo: Enterprise customer, change this!
 const timeout = 10*1000; // 10 secs
 

@@ -1,9 +1,9 @@
-const telesign = require('../telesign_config');
+const telesign = require('../telesignClient');
 
 const phoneNumber = "phone-number";
 const accountLifeCycleEvent = "create";
 
-console.log("## ScoreClient.getScore ##");
+console.log("## ScoreClient.score ##");
 
 function score_callback(error, response_body) {
     if (error === null) {
@@ -15,4 +15,4 @@ function score_callback(error, response_body) {
     }
 }
 
-telesign.score.getScore(score_callback, phoneNumber, accountLifeCycleEvent);
+telesign.score.score(score_callback, phoneNumber, accountLifeCycleEvent);

@@ -1,18 +1,18 @@
-const telesign = require('../telesign_config');
+const telesign = require('../telesignClient');
 
 const phoneNumber = "phone-number";
 const phoneTypeVOIP = "5";
 
-console.log("## PhoneIDClient.getPhoneID ##");
+console.log("## PhoneIDClient.phoneID ##");
 
-function message_callback(error, response_body) {
+function messageCallback(error, responseBody) {
     if (error === null) {
         console.log(`PhoneID response for phone number: ${phoneNumber}`
-            + ` => code: ${response_body['status']['code']}`
-            + `, description: ${response_body['status']['description']}`);
+            + ` => code: ${responseBody['status']['code']}`
+            + `, description: ${responseBody['status']['description']}`);
 
-        if (response_body['status']['code'] === 200) {
-            if (response_body['phone_type']['code'] === phoneTypeVOIP) {
+        if (responseBody['status']['code'] === 200) {
+            if (responseBody['phone_type']['code'] === phoneTypeVOIP) {
                 console.log("Phone type in request is VOIP");
             } else {
                 console.log("Phone type in request is not VOIP");
@@ -23,4 +23,4 @@ function message_callback(error, response_body) {
     }
 }
 
-telesign.phoneid.getPhoneID(message_callback, phoneNumber);
+telesign.phoneid.phoneID(messageCallback, phoneNumber);

@@ -24,7 +24,7 @@ class VoiceClient extends RestClient {
     }
 
     /***
-     * Send a voice callto the target phone_number.
+     * Send a voice callto the target phoneNumber.
      *
      * See https://developer.telesign.com/docs/voice-api for detailed API documentation.
      *
@@ -83,7 +83,8 @@ class VoiceClient extends RestClient {
      * @param callback: Callback method to handle the response.
      * @param referenceId: Reference ID received in the response of call.
      * @param debug: Adds debug logs
-     */    getCallStatus(callback, referenceId, debug = false) {
+     */
+    status(callback, referenceId, debug = false) {
         if (debug) {
             console.log("Retreving Call Status for " + referenceId)
         }

@@ -1,4 +1,4 @@
-const telesign = require('../telesign_config');
+const telesign = require('../telesignClient');
 
 const phoneNumber = "phone-number";
 const messageType = "ARN";
@@ -7,17 +7,17 @@ const message = "Your code is " + verifyCode;
 
 console.log("## VoiceClient.call ##");
 
-function voice_callback(error, response_body) {
+function voiceCallback(error, responseBody) {
     if (error === null) {
         console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
-            ` => code: ${response_body['status']['code']}` +
-            `, description: ${response_body['status']['description']}`);
+            ` => code: ${responseBody['status']['code']}` +
+            `, description: ${responseBody['status']['description']}`);
     } else {
         console.error("Unable to send message. " + error);
     }
 }
 
-telesign.voice.call(voice_callback, phoneNumber, message, messageType);
+telesign.voice.call(voiceCallback, phoneNumber, message, messageType);
 
 function prompt(question, callback) {
     const stdin = process.stdin,

@@ -28,21 +28,21 @@ class PhoneIDClient extends RestClient {
      * See https://developer.telesign.com/docs/phoneid-api for detailed API documentation.
      *
      * @param callback: Callback method to handle response.
-     * @param phone_number: Phone number to call
+     * @param phoneNumber: Phone number to call
      * @param accountLifecycleEvent: (Optional) Indicates the phase in lifecycle for the
      * transaction.
-     * @param originating_ip
+     * @param originatingIP: IP address of request origination host
      */
-    getPhoneID(callback, phone_number, accountLifecycleEvent = null, originating_ip = null) {
+    phoneID(callback, phoneNumber, accountLifecycleEvent = null, originatingIP = null) {
         var params = {};
-        if (originating_ip != null) {
-            params.originating_ip = originating_ip;
+        if (originatingIP != null) {
+            params.originating_ip = originatingIP;
         }
         if (accountLifecycleEvent != null) {
             params.account_lifecycle_event = accountLifecycleEvent;
         }
 
-        this.execute(callback, "POST", this.phoneid_resource + encodeURI(phone_number), params);
+        this.execute(callback, "POST", this.phoneid_resource + encodeURI(phoneNumber), params);
     }
 }
 

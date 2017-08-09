@@ -16,7 +16,7 @@ class ScoreClient extends RestClient {
             console.log("Init Score Client")
         }
 
-        this.score_resource = "/v1/score/";
+        this.scoreResource = "/v1/score/";
     }
 
     /***
@@ -34,17 +34,18 @@ class ScoreClient extends RestClient {
      * @param accountId: (Optional) End user’s account id
      * @param emailAddress: (Optional) End user’s email address
      * @param debug: Adds debug logs
-     */    getScore(callback,
-                    phoneNumber,
-                    accountLifecycleEvent,
-                    originatingIP = null,
-                    deviceId = null,
-                    accountId = null,
-                    emailAddress = null,
-                    debug = false) {
+     */
+    score(callback,
+          phoneNumber,
+          accountLifecycleEvent,
+          originatingIP = null,
+          deviceId = null,
+          accountId = null,
+          emailAddress = null,
+          debug = false) {
 
         if (debug) {
-            console.log("Retreving score for " + phone_number)
+            console.log("Retreving score for " + phoneNumber)
         }
 
         var params = {
@@ -63,7 +64,7 @@ class ScoreClient extends RestClient {
             params.email_address = emailAddress;
         }
 
-        this.execute(callback, "POST", this.score_resource + encodeURI(phoneNumber), params);
+        this.execute(callback, "POST", this.scoreResource + encodeURI(phoneNumber), params);
     }
 }
 
