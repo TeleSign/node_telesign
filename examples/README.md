@@ -40,7 +40,7 @@ Example: Messaging (SMS)
 Here is an example to send an SMS
 
 ```javascript
-    var phoneNumber = "12125555555"; // Your end user’s phone number, as a string of digits without spaces or
+    var phoneNumber = "phone_number"; // Your end user’s phone number, as a string of digits without spaces or
     // punctuation, beginning with the country dialing code (for example, “1” for North America)
     var message = "You're scheduled for a dentist appointment at 2:30PM.";
     var messageType = "ARN"; // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
@@ -87,7 +87,7 @@ The following code will make a phone call and wait 30 seconds and then check for
 ```javascript
     var voice = new TeleSignSDK.VoiceClient(customerID, apiKeys, restEndpoint, timeout);
     var language = "en-GB" // British English - full list avail in REST docs ai developer.telesign.com
-    var callbackURL = "http://www.mydomain.com/callback";
+    var callbackURL = "http://www.test.com/callback";
     var accountLifecycleEvent = "create"; // see options in API docs at developer.telesign.com
 
     var referenceId = null; // To be used to get call status later
@@ -120,7 +120,7 @@ The following code will retreive metadata on a phone number using the PhoneID AP
 ```javascript
     var phoneid = new TeleSignSDK.PhoneIDClient(customerID, apiKeys, restEndpoint, timeout);
     var accountLifecycleEvent = "create"; // see options in API docs at developer.telesign.com
-    var originatingIP = "203.0.113.45";
+    var originatingIP = "1.0.0.1";
 
     telesign.phoneid.phoneID(function(err, phoneidResponse) {
         console.log(phoneidResponse);
