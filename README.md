@@ -125,4 +125,4 @@ Further reading
 Use only the phone number you have verified.
 * The definitions of the parameters are best documented in the REST API documentation 
 located [here](https://developer.telesign.com/docs/api-docs).
-* Code examples can be found [here](https://github.com/TeleSign/node_telesign/tree/master/examples).
+* Code examples can be found [here](/examples).

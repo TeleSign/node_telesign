@@ -10,13 +10,8 @@ class PhoneIDClient extends RestClient {
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
-                useragent = null,
-                debug = false) {
-        super(customerId, apiKey, restEndpoint, timeout, useragent, debug);
-
-        if (debug) {
-            console.log("Init PhoneID")
-        }
+                useragent = null) {
+        super(customerId, apiKey, restEndpoint, timeout, useragent);
 
         this.phoneid_resource = "/v1/phoneid/";
     }

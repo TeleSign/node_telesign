@@ -8,13 +8,9 @@ class ScoreClient extends RestClient {
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
-                userAgent = null,
-                debug = false) {
+                userAgent = null) {
 
         super(customerId, apiKey, restEndpoint, timeout, userAgent);
-        if (debug) {
-            console.log("Init Score Client")
-        }
 
         this.scoreResource = "/v1/score/";
     }
@@ -33,7 +29,6 @@ class ScoreClient extends RestClient {
      * @param deviceId: (Optional) End user’s device identifier.
      * @param accountId: (Optional) End user’s account id
      * @param emailAddress: (Optional) End user’s email address
-     * @param debug: Adds debug logs
      */
     score(callback,
           phoneNumber,
@@ -41,12 +36,7 @@ class ScoreClient extends RestClient {
           originatingIP = null,
           deviceId = null,
           accountId = null,
-          emailAddress = null,
-          debug = false) {
-
-        if (debug) {
-            console.log("Retreving score for " + phoneNumber)
-        }
+          emailAddress = null) {
 
         var params = {
             account_lifecycle_event: accountLifecycleEvent

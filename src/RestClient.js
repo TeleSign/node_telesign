@@ -18,17 +18,11 @@ class RestClient {
                 apiKey,
                 restEndpoint = "https://rest-api.telesign.com",
                 timeout = 15000,
-                userAgent = null,
-                debug = false) {
+                userAgent = null) {
         this.customerId = customerId;
         this.apiKey = apiKey;
         this.restEndpoint = (restEndpoint === null ? "https://rest-api.telesign.com" : restEndpoint);
         this.timeout = timeout;
-        this.debug = debug;
-
-        if (debug) {
-            console.log("Init PhoneId Client")
-        }
 
         try {
             if (userAgent === null) {
@@ -43,9 +37,6 @@ class RestClient {
             console.error("WARNING: Trouble determining OS Specific information for user agent");
         }
 
-        if (this.debug) {
-            console.log("User-Agent: " + this.userAgent);
-        }
     }
 
 
@@ -141,9 +132,6 @@ class RestClient {
         if (methodName == "POST" || methodName == "PUT") {
             if (params != null && Object.keys(params).length > 0) {
                 bodyData = querystring.stringify(params);
-                if (this.debug) {
-                    console.log("POST/Put Params: " + bodyData);
-                }
             }
         }
         else { // GET method
@@ -173,9 +161,6 @@ class RestClient {
         if (bodyData != null) {
             requestParams.body = bodyData;
         }
-        if (this.debug) {
-            console.log(requestParams);
-        }
 
         request(requestParams, function (err, res, bodyStr) {
 
@@ -184,10 +169,6 @@ class RestClient {
                 console.error(`FATAL ERROR: ${new Date()}`
                     + ` Problems contacting Telesign Servers. Check your internet connection.`);
 
-                if (this.debug) {
-                    console.log(err);
-                    console.log(res);
-                }
                 callback(err, bodyStr);
 
             }

@@ -11,13 +11,9 @@ class MessagingClient extends RestClient {
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
-                userAgent = null,
-                debug = false) {
-        super(customerId, apiKey, restEndpoint, timeout, userAgent, debug);
+                userAgent = null) {
+        super(customerId, apiKey, restEndpoint, timeout, userAgent);
 
-        if (debug) {
-            console.log("Init MessagingClient")
-        }
         this.messaging_resource = "/v1/messaging";
         this.messaging_status_resource = "/v1/messaging/";
     }
@@ -39,7 +35,7 @@ class MessagingClient extends RestClient {
             message: message,
             message_type: messageType
         };
-        this.execute(callback, "POST", this.messaging_resource, params, this.debug);
+        this.execute(callback, "POST", this.messaging_resource, params);
     }
 
     /***
@@ -52,8 +48,7 @@ class MessagingClient extends RestClient {
         this.execute(callback,
             "GET",
             this.messaging_status_resource + referenceId,
-            null,
-            this.debug);
+            null);
     }
 }
 
