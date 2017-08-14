@@ -41,7 +41,7 @@ Here is an example to send an SMS
 
 ```javascript
     var phoneNumber = "12125555555"; // Your end user’s phone number, as a string of digits without spaces or
-    punctuation, beginning with the country dialing code (for example, “1” for North America)
+    // punctuation, beginning with the country dialing code (for example, “1” for North America)
     var message = "You're scheduled for a dentist appointment at 2:30PM.";
     var messageType = "ARN"; // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
     var referenceId = null; // need this to check status later

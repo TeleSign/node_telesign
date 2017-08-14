@@ -157,8 +157,6 @@ test('Test AppVerifyClient', (assert) => {
 
     telesign.appverify.status(callback, xid);
 
-    console.log(`telesign.appverify.execute called ${telesign.appverify.execute.callCount}`);
-
     assert.ok(telesign.appverify.execute.calledOnce, 'App verify execute should be called once');
     assert.end();
 });
@@ -174,8 +172,6 @@ test('Test SMSClient', (assert) => {
     telesign.sms.execute = sinon.mock();
 
     telesign.sms.message(callback, phoneNumber, message, messageType);
-
-    console.log(`telesign.sms.execute call count: ${telesign.sms.execute.callCount}`);
 
     assert.ok(telesign.sms.execute.calledOnce, 'SMS execute should be called once');
     assert.ok(telesign.sms.execute.calledWith(callback, "POST"),
@@ -211,8 +207,6 @@ test('Test PhoneID', (assert) => {
 
     telesign.phoneid.phoneID(callback, phoneNumber, accountLifeCycleEvent, originatingIP);
 
-    console.log(`telesign.phoneid.execute call count: ${telesign.phoneid.execute.callCount}`);
-
     assert.ok(telesign.phoneid.execute.calledOnce, 'PhoneID execute should be called once');
     assert.end();
 });
@@ -236,8 +230,6 @@ test('Test Score', (assert) => {
         deviceId,
         accountId,
         emailAddress);
-
-    console.log(`telesign.score.execute call count: ${telesign.score.execute.callCount}`);
 
     assert.ok(telesign.score.execute.calledOnce, 'Score execute should be called once');
     assert.end();
@@ -265,8 +257,6 @@ test('Test Voice', (assert) => {
         accountLifecycleEvent,
         originatingIP
     );
-
-    console.log(`telesign.voice.execute call count: ${telesign.voice.execute.callCount}`);
 
     assert.ok(telesign.voice.execute.calledOnce, 'Voice execute should be called once');
     assert.ok(telesign.voice.execute.calledWith(callback, "POST"),
