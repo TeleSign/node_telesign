@@ -1,8 +1,8 @@
-[<img src="https://raw.github.com/TeleSign/node_telesign/master/node_banner.jpg">](https://developer.telesign.com)
+[<img src="/node_banner.jpg">](https://developer.telesign.com)
 
 [<img src="https://img.shields.io/travis/TeleSign/node_telesign.svg">](https://travis-ci.org/TeleSign/node_telesign)
 
-[https://img.shields.io/codecov/c/github/TeleSign/node_telesign.svg](https://codecov.io/gh/TeleSign/node_telesign)
+[<img src="https://img.shields.io/codecov/c/github/TeleSign/node_telesign.svg">](https://codecov.io/gh/TeleSign/node_telesign)
 
 
 TeleSign Node.js SDK
@@ -69,7 +69,7 @@ Example: You can run the 1_send_message.js with the following command
 node examples/appverify/1_send_message.js
 ```
 
-Samle code: Messaging (SMS)
+Sample code: Messaging (SMS)
 ----------------------------------------
 
 After installing the SDK, begin by including the telesign SDK and declaring customerId, apiKey, restEndpoint, and
