@@ -1,5 +1,5 @@
 {
-  "name": "telesignsdk",
+  "name": "telesign",
   "version": "1.0.0",
   "description": "Official TeleSign SDK for Rest APIs including Messaging (SMS), Score, PhoneID, Voice, and AppVerify",
   "repository": {
