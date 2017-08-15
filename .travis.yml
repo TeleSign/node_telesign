@@ -5,7 +5,7 @@ before_install:
   - npm i -g npm@5.3
 install:
   - npm install
-test:
-  - npm test
+  - npm install -g codecov
 script:
   - npm run coverage
+  - codecov
