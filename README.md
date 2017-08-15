@@ -1,6 +1,5 @@
 [<img src="/node_banner.jpg">](https://developer.telesign.com)
-
-[<img src="https://img.shields.io/travis/TeleSign/node_telesign.svg">](https://travis-ci.org/TeleSign/node_telesign) [<img src="https://img.shields.io/codecov/c/github/TeleSign/node_telesign.svg">](https://codecov.io/gh/TeleSign/node_telesign) [![npm](https://img.shields.io/npm/v/telesignsdk.svg)]() [![npm](https://img.shields.io/npm/l/telesignsdk.svg)]()  
+[<img src="https://img.shields.io/travis/TeleSign/node_telesign.svg">](https://travis-ci.org/TeleSign/node_telesign) [<img src="https://img.shields.io/codecov/c/github/TeleSign/node_telesign.svg">](https://codecov.io/gh/TeleSign/node_telesign) [![npm](https://img.shields.io/npm/v/telesignsdk.svg)](https://www.npmjs.com/package/telesignsdk) [![npm](https://img.shields.io/npm/l/telesignsdk.svg)](https://github.com/TeleSign/node_telesign/blob/master/LICENSE.txt)  
 
 TeleSign Node.js SDK
 =================
