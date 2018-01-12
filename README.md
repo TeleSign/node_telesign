@@ -50,6 +50,11 @@ additional third party dependencies to your project we have ensured that the SDK
 sample code. We have also made sure that more complicated functions such as generate_telesign_headers can be easily
 extracted from the SDK and used 'as is' in your project.
 
+Support
+------------
+Tested using: 
+- Node JS version 6
+- NPM 5.3 
 
 Examples
 ========
