@@ -29,6 +29,8 @@ class ScoreClient extends RestClient {
      * @param deviceId: (Optional) End user’s device identifier.
      * @param accountId: (Optional) End user’s account id
      * @param emailAddress: (Optional) End user’s email address
+     * @param requestRiskInsights: (Optional) Boolean value of true, false or null for reason codes
+     *                              ONLY SET IF Score 2.0 requests is enabled, confirm with your Telesign representative
      */
     score(callback,
           phoneNumber,
@@ -36,7 +38,8 @@ class ScoreClient extends RestClient {
           originatingIP = null,
           deviceId = null,
           accountId = null,
-          emailAddress = null) {
+          emailAddress = null,
+          requestRiskInsights = null) {
 
         var params = {
             account_lifecycle_event: accountLifecycleEvent
@@ -52,6 +55,9 @@ class ScoreClient extends RestClient {
         }
         if (emailAddress != null) {
             params.email_address = emailAddress;
+        }
+        if (requestRiskInsights != null) {
+            params.request_risk_insights = requestRiskInsights;
         }
 
         this.execute(callback, "POST", this.scoreResource + encodeURI(phoneNumber), params);
