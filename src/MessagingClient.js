@@ -8,10 +8,10 @@ const RestClient = require("./RestClient.js");
 class MessagingClient extends RestClient {
 
     constructor(customerId,
-        apiKey,
-        restEndpoint = null,
-        timeout = 15000,
-        userAgent = null) {
+                apiKey,
+                restEndpoint = null,
+                timeout = 15000,
+                userAgent = null) {
         super(customerId, apiKey, restEndpoint, timeout, userAgent);
 
         this.messaging_resource = "/v1/messaging";
