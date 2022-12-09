@@ -1,125 +1,42 @@
-[<img src="/node_banner.jpg">](https://developer.telesign.com)
-[<img src="https://img.shields.io/travis/TeleSign/node_telesign.svg">](https://travis-ci.org/TeleSign/node_telesign) [<img src="https://img.shields.io/codecov/c/github/TeleSign/node_telesign.svg">](https://codecov.io/gh/TeleSign/node_telesign) [![npm](https://img.shields.io/npm/v/telesignsdk.svg)](https://www.npmjs.com/package/telesignsdk) [![npm](https://img.shields.io/npm/l/telesignsdk.svg)](https://github.com/TeleSign/node_telesign/blob/master/LICENSE.txt)  
+[![npm](https://img.shields.io/npm/v/telesignsdk.svg)](https://www.npmjs.com/package/telesignsdk) [![license](https://img.shields.io/npm/l/telesignsdk.svg)](https://github.com/TeleSign/node_telesign/blob/master/LICENSE.txt)  
 
-TeleSign Node.js SDK
-=================
+# TeleSign Self-service Node.js SDK
 
-TeleSign is a communications platform as a service (CPaaS) company, founded on security. Since 2005, TeleSign has
-been a trusted partner to the world’s leading websites and mobile applications, helping secure billions of end-user
-accounts. Today, TeleSign’s data-driven, cloud communications platform is changing the way businesses engage with
-customers and prevent fraud.
+[Telesign](https://telesign.com) connects, protects, and defends the customer experience with intelligence from billions of digital interactions and mobile signals. Through developer-friendly APIs that deliver user verification, digital identity, and omnichannel communications, we help the world's largest brands secure onboarding, maintain account integrity, prevent fraud, and streamline omnichannel engagement.
 
-For more information about TeleSign, visit our [website](http://www.TeleSign.com>).
+## Requirements
 
+* **Node.js 6+**
+* **npm** *(Optional)* - This package manager isn't required to use this SDK, but it is required to use the installation instructions below.
 
-Documentation
--------------
+> **NOTE:**
+> 
+> These instructions are for MacOS. They will need to be adapted if you are installing on Windows.
 
-Code documentation is included in the SDK. Complete documentation, quick start guides and reference material
-for the TeleSign API is available within the [TeleSign Standard Documentation](https://standard.telesign.com/).
+## Installation
 
+Follow these steps to add this SDK as a dependency to your project.
 
-Installation
-------------
-
-To add the TeleSign Node.js SDK using NPM to your Node.js project:
+1. *(Optional)* Create a new directory for your Node.js project. Skip this step if you already have created a project. If you plan to create multiple Node.js projects that use Telesign, we recommend that you group them within a `telesign_integrations` directory.
 
 ```
-npm install telesignsdk -save
+    cd ~/code/local
+    mkdir telesign_integrations
+    cd telesign_integrations
+    mkdir {your project name}
+    cd {your project name}
 ```
 
-If you have already cloned this SDK, you can using the following command
-```
-npm install /path/to/sdk -save
-```
+2. Install the SDK as a dependency in the top-level directory of your project using the command below. Once the SDK is installed, you should see a message in the terminal notifying you that you have successfully installed the SDK.
 
-Node.js **6+** is required for the TeleSign Node.js SDK.
+    `npm install telesignsdk --save`
 
-Authentication
---------------
+## Authentication
 
-You will need a Customer ID and API Key in order to use TeleSign’s API. If you already have an account you can retrieve
-them from your account dashboard within the [Portal](https://portal.telesign.com/login). If you have not signed up
-yet, sign up [here](https://portal.telesign.com/signup).
+If you use a Telesign SDK to make your request, authentication is handled behind-the-scenes for you. All you need to provide is your Customer ID and API Key. The SDKs apply Digest authentication whenever they make a request to a Telesign service where it is supported. When Digest authentication is not supported, the SDKs apply Basic authentication.
 
+## What's next
 
-Dependencies
-------------
-
-We make use of popular, feature-rich and well-tested open-source libraries to perform the underlying functionality of
-the SDK. These dependencies are managed by the community accepted package manager. If you are unable to add these
-additional third party dependencies to your project we have ensured that the SDK code is easy to read and can serve as
-sample code. We have also made sure that more complicated functions such as generate_telesign_headers can be easily
-extracted from the SDK and used 'as is' in your project.
-
-
-Examples
-========
-
-**How to Run**
-
-1. Edit file and replace values for API Key, Customer ID, and mobile_number
-2. Run the file via : node filename.js
-
-Example: You can run the 1_send_message.js with the following command
-
-```
-node examples/messaging/1_send_message.js
-```
-
-Sample code: Messaging (SMS)
-----------------------------------------
-
-After installing the SDK, begin by including the telesign SDK and declaring customerId, apiKey, restEndpoint, and
-timeout variables.
-
-Setup Telesign Client
-
-```javascript
-    var TeleSignSDK = require('telesignsdk');
-    var customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890"; // find in portal.telesign.com
-    var apiKey = "EXAMPLE----TE8sTgg45yusumoN4BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==";
-    var restEndpoint = "https://rest-api.telesign.com";
-    var timeout = 10*1000; // 10 secs
-
-    var telesign = new TeleSignSDK( customerId,
-                                    apiKey,
-                                    restEndpoint,
-                                    timeout // optional
-                                  );
-```
-
-Send an SMS
-
-```javascript
-    var phoneNumber = "phone_number"; // Your end user’s phone number, as a string of digits without spaces or
-    // punctuation, beginning with the country dialing code (for example, “1” for North America)
-    var message = "You're scheduled for a dentist appointment at 2:30PM.";
-    var messageType = "ARN"; // ARN = Alerts, Reminders, and Notifications; OTP = One time password; MKT = Marketing
-    var referenceId = null; // need this to check status later
-
-    telesign.sms.message(function(err, reply){
-            if(err){
-                console.log("Error: Could not reach TeleSign's servers");
-                console.error(err); // network failure likely cause for error
-            }
-            else{
-                console.log("YAY!, the SMS message is being sent now by TeleSign!");
-                console.log(reply);
-                referenceId=reply.reference_id; // save the reference_id to check status of the message
-            }
-        },
-        phoneNumber,
-        message,
-        messageType
-    );
-```
-
-
-Further reading
----------------
-
-* If you are using the trial account, make sure you understand it has some limitations. 
-Use only the phone number you have verified.
-* For documentation, see the [TeleSign Standard Documentation](https://standard.telesign.com).
-* Code examples can be found [here](/examples).
+* Learn to send a request to Telesign with code with one of our [tutorials](https://developer.telesign.com/enterprise/docs/tutorials).
+* Browse our [Developer Portal](https://developer.telesign.com) for tutorials, how-to guides, reference content, and more.
+* Check out our [sample code](https://github.com/TeleSign/sample_code) on GitHub.
