@@ -4,6 +4,7 @@ const ScoreClient = require('./ScoreClient.js');
 const PhoneIDClient = require('./PhoneIDClient.js');
 const VoiceClient = require('./VoiceClient.js');
 const AppVerifyClient = require('./AppVerifyClient.js');
+const IntelligenceClient = require('./IntelligenceClient.js');
 
 module.exports = class TeleSign {
     constructor(customerId,
@@ -18,5 +19,6 @@ module.exports = class TeleSign {
         this.score = new ScoreClient(customerId, apiKey, restEndpoint, timeout, useragent);
         this.phoneid = new PhoneIDClient(customerId, apiKey, restEndpoint, timeout, useragent);
         this.appverify = new AppVerifyClient(customerId, apiKey, restEndpoint, timeout, useragent);
+        this.intelligence = new IntelligenceClient(customerId, apiKey, restEndpoint, timeout, useragent);
     }
 };
