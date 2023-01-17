@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const URI = require('urijs');
 const querystring = require('querystring');
 const packagejson = require('../package.json');
+const Constants = require('./Constants.js');
 
 /***
  * The TeleSign RestClient is a generic HTTP REST client that can be extended to make
@@ -18,12 +19,13 @@ class RestClient {
                 apiKey,
                 restEndpoint = "https://rest-api.telesign.com",
                 timeout = 15000,
-                userAgent = null) {
+                userAgent = null,
+                contentType = "application/x-www-form-urlencoded") {
         this.customerId = customerId;
         this.apiKey = apiKey;
         this.restEndpoint = (restEndpoint === null ? "https://rest-api.telesign.com" : restEndpoint);
         this.timeout = timeout;
-        this.contentType = "application/x-www-form-urlencoded";
+        this.contentType = contentType ;
 
         try {
             if (userAgent === null) {
@@ -59,6 +61,7 @@ class RestClient {
      * @param date: The date and time of the request formatted in rfc 2616, as a string.
      * @param nonce: A unique cryptographic nonce for the request, as a string.
      * @param userAgent: (optional) User Agent associated with the request, as a string.
+     * @param authMethod : (optional) Authentication type. For ex: Basic, HMAC etc
      * @returns headers: {{Authorization: string, Date: *, Content-Type: string,
      * x-ts-auth-method: string, x-ts-nonce: *}}
      */
@@ -70,7 +73,8 @@ class RestClient {
                                    encodedFields,
                                    date = null,
                                    nonce = null,
-                                   userAgent = null) {
+                                   userAgent = null,
+                                   authMethod=null) {
 
         if (date == null) {
             date = (new Date()).toUTCString();
@@ -82,7 +86,7 @@ class RestClient {
 
         var contentType = (methodName == "POST" || methodName == "PUT") ?
             contentType : "";
-        var authMethod = "HMAC-SHA256";
+        var authMethod = authMethod!=null ? authMethod: Constants.AuthMethodNames.HMAC_SHA256;
 
         var urlencoded = "";
         if (encodedFields != null && encodedFields.length > 0) {
@@ -95,17 +99,20 @@ class RestClient {
             "\n" + "x-ts-nonce:" + nonce +
             urlencoded +
             "\n" + resource;
+        if(authMethod === Constants.AuthMethodNames.BASIC){
+            var authorization = "Basic " + Buffer.from(customerId + ":" + apiKey).toString('base64');
+        }else{
+            var signedStrUTF8 = stringToSignBuilder.toString('utf8');
+            var decodedAPIKey = Buffer.from(apiKey, 'base64');
 
-        var signedStrUTF8 = stringToSignBuilder.toString('utf8');
-        var decodedAPIKey = Buffer.from(apiKey, 'base64');
+            var jsSignature = crypto.createHmac("sha256", decodedAPIKey)
+                .update(signedStrUTF8)
+                .digest("base64")
+                .toString('utf8');
+            // console.log("js Signature: " + jsSignature);
 
-        var jsSignature = crypto.createHmac("sha256", decodedAPIKey)
-            .update(signedStrUTF8)
-            .digest("base64")
-            .toString('utf8');
-        // console.log("js Signature: " + jsSignature);
-
-        var authorization = "TSA " + customerId + ":" + jsSignature;
+            var authorization = "TSA " + customerId + ":" + jsSignature;
+        }
         var headers = {
             "Authorization": authorization,
             "Date": date,
@@ -126,9 +133,10 @@ class RestClient {
      * @param callback: Callback method to handle response.
      * @param methodName: The HTTP method name, as an upper case string.
      * @param resource: The partial resource URI to perform the request against, as a string.
+     * @param authMethod: (optional) Authentication type. For ex: Basic, HMAC etc
      * @param params: Body params to perform the HTTP request with, as a dictionary.
      */
-    execute(callback, methodName, resource, params = null) {
+    execute(callback, methodName, resource, params = null, authMethod = null) {
         var telesignURL = this.restEndpoint + resource;
         var bodyData = this.contentType=="application/json" ? "{}" : null;
         if (methodName == "POST" || methodName == "PUT") {
@@ -157,7 +165,8 @@ class RestClient {
             bodyData,
             null,
             null,
-            this.userAgent);
+            this.userAgent,
+            authMethod);
 
         var requestParams = {
             headers: headers,

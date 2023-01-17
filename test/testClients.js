@@ -1,4 +1,5 @@
 const RestClient = require('../src/RestClient');
+const Constants = require('../src/Constants');
 const test = require('tape');
 const sinon = require('sinon');
 const request = require('request');
@@ -55,6 +56,33 @@ test('Test generate Telesign headers with POST', (assert) => {
         date,
         nonce,
         userAgent = 'unit_test');
+
+    assert.equal(actualHeaders['Authorization'], expectedAuthorizationHeader, 'Header Auth match');
+    assert.end();
+});
+
+
+test('Test generate Telesign headers with Basic Authentication', (assert) => {
+    const method = 'POST';
+    const date = 'Wed, 14 Dec 2016 18:20:12 GMT';
+    const nonce = 'A1592C6F-E384-4CDB-BC42-C3AB970369E9';
+    const resource = '/v1/resource';
+    const bodyParamsURLEncoded = 'test=param';
+    const contentType = "application/json";
+
+    const expectedAuthorizationHeader =
+        'Basic RkZGRkZGRkYtRUVFRS1ERERELTEyMzQtQUIxMjM0NTY3ODkwOlZHVnpkQ0JMWlhrPQ==';
+
+    const actualHeaders = RestClient.generateTeleSignHeaders(customerId,
+        apiKey,
+        method,
+        resource,
+        contentType,
+        bodyParamsURLEncoded,
+        date,
+        nonce,
+        userAgent = 'unit_test',
+        Constants.AuthMethodNames.BASIC);
 
     assert.equal(actualHeaders['Authorization'], expectedAuthorizationHeader, 'Header Auth match');
     assert.end();
@@ -284,5 +312,23 @@ test('Test Voice status', (assert) => {
     assert.ok(telesign.voice.execute.calledWith(callback, "GET"),
         "Voice execute should be called with these params");
 
+    assert.end();
+});
+
+
+// Intelligence test ------------------
+test('Test Intelligence', (assert) => {
+    const requestBody = {};
+
+    let callback = sinon.spy();
+    telesign.intelligence.execute = sinon.mock();
+
+    telesign.intelligence.intelligence(callback,
+        requestBody);
+
+    assert.ok(telesign.intelligence.execute.calledOnce, 'Intelligence execute should be called once');
+    assert.ok(telesign.intelligence.execute.calledWith(callback, "POST", "/intelligence",
+            requestBody, Constants.AuthMethodNames.BASIC),
+        "Intelligence execute should be called with these params");
     assert.end();
 });
