@@ -6,12 +6,13 @@ const RestClient = require("./RestClient.js");
  */
 class AppVerifyClient extends RestClient {
 
-    constructor(customerId,
+    constructor(requestWrapper,
+                customerId,
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
                 userAgent = null) {
-        super(customerId, apiKey, restEndpoint, timeout, userAgent);
+        super(requestWrapper, customerId, apiKey, restEndpoint, timeout, userAgent);
 
         this.appverify_resource = "/v1/mobile/verification/status/";
     }

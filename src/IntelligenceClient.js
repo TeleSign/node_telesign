@@ -11,13 +11,14 @@ const contentType = "application/json";
  *and comprehensive reason codes.
  */
 class IntelligenceClient extends RestClient {
-    constructor(customerId,
+    constructor(requestWrapper,
+                customerId,
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
                 userAgent = null) {
 
-        super(customerId, apiKey, restEndpoint, timeout, userAgent, contentType);
+        super(requestWrapper, customerId, apiKey, restEndpoint, timeout, userAgent, contentType);
 
         this.intelligenceResource = INTELLIGENCE_ENDPOINT_PATH;
     }

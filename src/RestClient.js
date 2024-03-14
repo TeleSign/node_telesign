@@ -1,9 +1,7 @@
 const os = require('os');
-const request = require('request');
-const uuidV4Js = require("uuid-v4.js");
+const { v4: uuidV4Js } = require('uuid');
 const crypto = require("crypto");
 const URI = require('urijs');
-const querystring = require('querystring');
 const packagejson = require('../package.json');
 const Constants = require('./Constants.js');
 
@@ -15,12 +13,14 @@ const Constants = require('./Constants.js');
  */
 class RestClient {
 
-    constructor(customerId,
+    constructor(requestWrapper,
+                customerId,
                 apiKey,
                 restEndpoint = "https://rest-api.telesign.com",
                 timeout = 15000,
                 userAgent = null,
                 contentType = "application/x-www-form-urlencoded") {
+        this.requestWrapper = requestWrapper
         this.customerId = customerId;
         this.apiKey = apiKey;
         this.restEndpoint = (restEndpoint === null ? "https://rest-api.telesign.com" : restEndpoint);
@@ -136,13 +136,14 @@ class RestClient {
      * @param authMethod: (optional) Authentication type. For ex: Basic, HMAC etc
      * @param params: Body params to perform the HTTP request with, as a dictionary.
      */
-    execute(callback, methodName, resource, params = null, authMethod = null) {
+    execute(callback, methodName, resource, params = null, authMethod = null, nonce = null, date = null) {
         var telesignURL = this.restEndpoint + resource;
         var bodyData = this.contentType=="application/json" ? "{}" : null;
         if (methodName == "POST" || methodName == "PUT") {
             if (params != null && Object.keys(params).length > 0) {
               if (this.contentType == "application/x-www-form-urlencoded") {
-                bodyData = querystring.stringify(params);
+                 const urlSearchParams = new URLSearchParams(params);
+                 bodyData = urlSearchParams.toString();
               } else {
                 bodyData = JSON.stringify(params);
               }
@@ -163,14 +164,14 @@ class RestClient {
             resource,
             this.contentType,
             bodyData,
-            null,
-            null,
+            date !== null ? date : null,
+            nonce,
             this.userAgent,
             authMethod);
 
         var requestParams = {
             headers: headers,
-            uri: telesignURL,
+            url: telesignURL,
             method: methodName,
             timeout: this.timeout
         };
@@ -179,11 +180,11 @@ class RestClient {
             requestParams.body = bodyData;
         }
 
-        request(requestParams, function (err, res, bodyStr) {
+        this.requestWrapper.request(requestParams, function (err, res, bodyStr) {
 
             if (err) {
 
-                console.error(`FATAL ERROR: ${new Date()}`
+                console.error(`FATAL ERROR: ${date !== null ? date : new Date()}`
                     + ` Problems contacting Telesign Servers. Check your internet connection.`);
 
                 if (callback){
