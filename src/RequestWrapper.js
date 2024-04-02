@@ -1,5 +1,4 @@
 const axios = require('axios');
-const request = require('request');
 
 class RequestWrapper {
   request(options, callback) {
@@ -59,11 +58,6 @@ class AxiosRequestWrapper extends RequestWrapper {
     default:
       console.error('Method: ' + options.method + ' not supported!');
     }
-  }
-
-  requestOld(requestParams, callback) {
-    console.log('INTERCEPT OLD REQUEST -> ' + JSON.stringify(requestParams, null, 2))
-    request(requestParams, callback);
   }
 }
 
