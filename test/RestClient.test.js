@@ -349,7 +349,7 @@ describe('RestClient', () => {
       expect(actualOptions.headers).toHaveProperty('Authorization', 'TSA customerId:y7PFf4BjQViy9TfeUTQutsQzKm/6T7NrklwOfaOTRKc=');
       expect(actualOptions.headers).toHaveProperty('Content-Type', '');
       expect(actualOptions.headers).toHaveProperty('Date', 'Wed, 14 Dec 2016 18:20:12 GMT');
-      expect(actualOptions.headers).toHaveProperty('User-Agent', expect.stringContaining('TeleSignSDK/ECMAScript-Node v 2.2.3'))
+      expect(actualOptions.headers).toHaveProperty('User-Agent', expect.stringContaining('TeleSignSDK/ECMAScript-Node v 3.0.0'))
       expect(actualOptions.headers).toHaveProperty('x-ts-auth-method', 'HMAC-SHA256');
       expect(actualOptions.headers).toHaveProperty('x-ts-auth-method', 'HMAC-SHA256')
       expect(actualOptions.headers).toHaveProperty('x-ts-nonce', 'A1592C6F-E384-4CDB-BC42-C3AB970369E9')
@@ -445,7 +445,7 @@ describe('RestClient', () => {
       expect(actualOptions.headers).toHaveProperty('Authorization', 'TSA customerId:aQk5d8nanixOKIzrQfzIWjEqvVDxEuMOCoSoiH7Cnsc=');
       expect(actualOptions.headers).toHaveProperty('Content-Type', 'application/x-www-form-urlencoded');
       expect(actualOptions.headers).toHaveProperty('Date', 'Wed, 15 Dec 2016 18:20:12 GMT');
-      expect(actualOptions.headers).toHaveProperty('User-Agent', expect.stringContaining('TeleSignSDK/ECMAScript-Node v 2.2.3'))
+      expect(actualOptions.headers).toHaveProperty('User-Agent', expect.stringContaining('TeleSignSDK/ECMAScript-Node v 3.0.0'))
       expect(actualOptions.headers).toHaveProperty('x-ts-auth-method', 'HMAC-SHA256')
       expect(actualOptions.headers).toHaveProperty('x-ts-nonce', 'FD7E3E50-6F1A-4BAF-9A5C-2F11B9A5B654')
       expect(actualOptions).toHaveProperty('method', 'POST');
@@ -479,7 +479,7 @@ describe('RestClient', () => {
       expect(actualOptions.headers).toHaveProperty('Authorization', 'TSA customerId:5/gV/TLGSxrKPCUsuAwBpu5ZFm/xNAQpPuMe+Jvtt1k=');
       expect(actualOptions.headers).toHaveProperty('Content-Type', 'application/x-www-form-urlencoded');
       expect(actualOptions.headers).toHaveProperty('Date', 'Wed, 15 Dec 2016 18:20:12 GMT');
-      expect(actualOptions.headers).toHaveProperty('User-Agent', expect.stringContaining('TeleSignSDK/ECMAScript-Node v 2.2.3'))
+      expect(actualOptions.headers).toHaveProperty('User-Agent', expect.stringContaining('TeleSignSDK/ECMAScript-Node v 3.0.0'))
       expect(actualOptions.headers).toHaveProperty('x-ts-auth-method', 'HMAC-SHA256')
       expect(actualOptions.headers).toHaveProperty('x-ts-nonce', 'FD7E3E50-6F1A-4BAF-9A5C-2F11B9A5B654')
       expect(actualOptions).toHaveProperty('method', 'PUT');

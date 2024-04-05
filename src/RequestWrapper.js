@@ -28,11 +28,6 @@ const handleFailure = (error, callback) => {
 class AxiosRequestWrapper extends RequestWrapper {
 
   request(options, callback) {
-    axios.interceptors.request.use(function (config) {
-      console.log('INTERCEPT NEW AXIOS -> ' + JSON.stringify(config, null, 2))
-      return config; // TODO: remove for prod
-    });
-
     switch (options.method) {
     case 'POST':
       axios.post(options.url, options.body, {
