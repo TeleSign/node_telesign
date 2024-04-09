@@ -7,12 +7,13 @@ const RestClient = require('./RestClient.js');
  */
 class VoiceClient extends RestClient {
 
-    constructor(customerId,
+    constructor(requestWrapper,
+                customerId,
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
                 useragent = null) {
-        super(customerId, apiKey, restEndpoint, timeout, useragent);
+        super(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
 
         this.voice_resource = "/v1/voice";
         this.voice_status_resource = "/v1/voice/"

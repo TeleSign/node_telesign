@@ -4,13 +4,14 @@ const RestClient = require('./RestClient.js');
  * Score provides risk information about a specified phone number.
  */
 class ScoreClient extends RestClient {
-    constructor(customerId,
+    constructor(requestWrapper,
+                customerId,
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
                 userAgent = null) {
 
-        super(customerId, apiKey, restEndpoint, timeout, userAgent);
+        super(requestWrapper, customerId, apiKey, restEndpoint, timeout, userAgent);
 
         this.scoreResource = "/v1/score/";
     }

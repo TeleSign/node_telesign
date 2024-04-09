@@ -5,6 +5,7 @@ const PhoneIDClient = require('./PhoneIDClient.js');
 const VoiceClient = require('./VoiceClient.js');
 const AppVerifyClient = require('./AppVerifyClient.js');
 const IntelligenceClient = require('./IntelligenceClient.js');
+const { AxiosRequestWrapper } = require('./RequestWrapper')
 
 module.exports = class TeleSign {
     constructor(customerId,
@@ -13,12 +14,13 @@ module.exports = class TeleSign {
                 timeout = 15000,
                 useragent = null) {
 
-        this.rest = new RestClient(customerId, apiKey, restEndpoint, timeout, useragent);
-        this.sms = new MessagingClient(customerId, apiKey, restEndpoint, timeout, useragent);
-        this.voice = new VoiceClient(customerId, apiKey, restEndpoint, timeout, useragent);
-        this.score = new ScoreClient(customerId, apiKey, restEndpoint, timeout, useragent);
-        this.phoneid = new PhoneIDClient(customerId, apiKey, restEndpoint, timeout, useragent);
-        this.appverify = new AppVerifyClient(customerId, apiKey, restEndpoint, timeout, useragent);
-        this.intelligence = new IntelligenceClient(customerId, apiKey, restEndpoint, timeout, useragent);
+        const requestWrapper = new AxiosRequestWrapper();
+        this.rest = new RestClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
+        this.sms = new MessagingClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
+        this.voice = new VoiceClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
+        this.score = new ScoreClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
+        this.phoneid = new PhoneIDClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
+        this.appverify = new AppVerifyClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
+        this.intelligence = new IntelligenceClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
     }
 };

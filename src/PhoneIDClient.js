@@ -6,12 +6,13 @@ const RestClient = require("./RestClient.js");
  */
 class PhoneIDClient extends RestClient {
 
-    constructor(customerId,
+    constructor(requestWrapper,
+                customerId,
                 apiKey,
                 restEndpoint = null,
                 timeout = 15000,
                 useragent = null) {
-        super(customerId, apiKey, restEndpoint, timeout, useragent);
+        super(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
 
         this.phoneid_resource = "/v1/phoneid/";
         this.contentType = "application/json";
