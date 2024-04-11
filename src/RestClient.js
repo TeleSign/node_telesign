@@ -1,8 +1,6 @@
-const os = require('os');
-const { v4: uuidV4Js } = require('uuid');
 const crypto = require("crypto");
-const URI = require('urijs');
-const packagejson = require('../package.json');
+const fs = require('fs');
+const path = require('path');
 const Constants = require('./Constants.js');
 
 /***
@@ -29,10 +27,15 @@ class RestClient {
 
         try {
             if (userAgent === null) {
-                this.userAgent = `TeleSignSDK/ECMAScript-Node v ${packagejson.version}`
-                    + ` ${os.arch()}`
-                    + `/${os.platform()}`
-                    + `-v${os.release()}`; // Generates a Node useragent - helpful in diagnosing errors
+                const packageJsonPath = path.join(__dirname, '..', 'package.json')
+                const packageJson = fs.readFileSync(packageJsonPath, 'utf8');
+                const packageData = JSON.parse(packageJson);
+                const version = packageData.version;
+                this.userAgent = `TeleSignSDK/ECMAScript-Node v ${version}`
+                    + ` ${process.arch}`
+                    + `/${process.platform}`
+                    + ` ${process.release.name}`
+                    + `/${process.version}`; // Generates a Node useragent - helpful in diagnosing errors
             }
         }
         catch (err) {
@@ -81,7 +84,7 @@ class RestClient {
         }
 
         if (nonce == null) {
-            nonce = uuidV4Js(); // generates a Random NONCE (Number Used Only Once)
+            nonce = crypto.randomUUID(); // generates a Random NONCE (Number Used Only Once)
         }
 
         var contentType = (methodName == "POST" || methodName == "PUT") ?
@@ -151,10 +154,12 @@ class RestClient {
         }
         else { // GET method
             if (params != null) {
-                telesignURL = URI(this.restEndpoint + resource).query(params).toString();
+                var url = new URL(this.restEndpoint + resource);
+                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+                telesignURL = url.toString();
             }
             else {
-                telesignURL = URI(this.restEndpoint + resource).toString();
+                telesignURL = new URL(this.restEndpoint + resource).toString();
             }
         }
 

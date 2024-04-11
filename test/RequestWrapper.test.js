@@ -1,163 +1,168 @@
 const RestClient = require('../src/RestClient');
-const AxiosRequestWrapperMock = require('./RequestWrapperMock');
-const { RequestWrapper, AxiosRequestWrapper } = require('../src/RequestWrapper');
-const axios = require('axios');
-
-jest.mock('axios');
+const FetchRequestWrapperMock = require('./RequestWrapperMock');
+const { RequestWrapper, FetchRequestWrapper } = require('../src/RequestWrapper');
 
 // REST Client Tests -----------------------------
-describe('AxiosRequestWrapper', () => {
+describe('FetchRequestWrapper', () => {
   const customerId = 'FFFFFFFF-EEEE-DDDD-1234-AB1234567890';
   const apiKey = 'VGVzdCBLZXk=';
   const restEndpoint = 'https://rest-api.telesign.com';
-  const timeout = 15000;
+  const timeout = 300;
   const userAgent = 'unit_test';
   const contentType = 'application/json';
-  const headers = { "field": "header-value" };
+  const headers = { field: "header-value" };
   const bodyStr = '{\"data\":\"data-value\"}';
-  const errorBody = { "data": "error-value" };
+  const errorBody = { response: "error-response" };
+  const errorResponse = { status: { code: 11011, description: "Invalid value for parameter reference_id." }};
   const successBody = { data: 'data-value' };
+  const successResponse = { status: 200, data: successBody, headers: headers }
   const getOptions = { method: 'GET', field: 'value' };
   const postOptions = { method: 'POST', field: 'value' };
   const putOptions = { method: 'PUT', field: 'value' };
 
-  describe('AxiosRequestWrapper', () => {
+  describe('FetchRequestWrapper', () => {
 
     afterEach(() => {
       jest.clearAllMocks();
     });
 
     it('should return response when POST is successful', async () => {
-      axios.post.mockImplementation((options, callback) => {
-        return Promise.resolve({ status: 200, data: successBody, headers: { field: 'header-value' }});
-      });
-      const requestWrapper = new AxiosRequestWrapper();
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(successResponse)
+        })
+      );
+      const sut = new FetchRequestWrapper();
 
-      const [response, bodyStr] = await new Promise((resolve) => {
-        requestWrapper.request(postOptions, (err, res, bodyStr) => resolve([res, bodyStr]))
+      const [response, resBodyStr] = await new Promise((resolve) => {
+        sut.request(postOptions, (err, res, bodyStr) => resolve([res, bodyStr]))
       });
 
       expect(response).toHaveProperty('status', 200);
       expect(response).toHaveProperty('headers', headers);
-      expect(response).toHaveProperty('bodyStr', bodyStr);
-      expect(bodyStr).toEqual(bodyStr);
+      expect(resBodyStr).toEqual(JSON.stringify(successResponse));
+    });
+
+    it('should return response when POST timeout', async () => {
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => new Promise((resolve, reject) => {
+            setTimeout(() => resolve(successResponse), 500);
+          })
+        })
+      );
+      const sut = new FetchRequestWrapper();
+
+      const [response, resBodyStr] = await new Promise((resolve) => {
+        sut.request({ ...postOptions, timeout }, (err, res, bodyStr) => resolve([res, bodyStr]))
+      });
+
+      expect(response).toBe(successResponse);
+    });
+
+    it('should return error when POST is rejected', async () => {
+      global.fetch.mockRejectedValue({
+        status: 401,
+        json: errorBody
+      });
+      const sut = new FetchRequestWrapper();
+
+      const [error, bodyStr] = await new Promise((resolve) => {
+        sut.request(postOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
+      });
+
+      expect(error).toHaveProperty('status', 401);
+      expect(error).toHaveProperty('json', errorBody);
     });
 
     it('should return error when POST fails', async () => {
-      axios.post.mockImplementation((options, callback) => {
-        return Promise.reject({ response: { status: 402, data: errorBody, headers: { field: 'header-value' }}});
-      });
-      const requestWrapper = new AxiosRequestWrapper();
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(errorResponse)
+        })
+      );
+      const sut = new FetchRequestWrapper();
 
-      const [error, bodyStr] = await new Promise((resolve) => {
-        requestWrapper.request(postOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
+      const [response, resBodyStr] = await new Promise((resolve) => {
+        sut.request(postOptions, (err, res, bodyStr) => resolve([res, bodyStr]))
       });
 
-      expect(error.response).toHaveProperty('status', 402);
-      expect(error.response).toHaveProperty('headers', headers);
-      expect(error.response).toHaveProperty('data', errorBody);
-      expect(bodyStr).toEqual(errorBody);
+      expect(response.status.code).toEqual(11011);
+      expect(response.status.description).toEqual('Invalid value for parameter reference_id.');
+      expect(resBodyStr).toEqual(JSON.stringify(errorResponse));
     });
 
-    it('should return error when PUT is successful', async () => {
-      axios.put.mockImplementation((options, callback) => {
-        return Promise.resolve({ status: 200, data: successBody, headers: { field: 'header-value' }});
-      });
-      const requestWrapper = new AxiosRequestWrapper();
+    it('should return response when PUT is successful', async () => {
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(successResponse)
+        })
+      );
+      const sut = new FetchRequestWrapper();
 
-      const [response, bodyStr] = await new Promise((resolve) => {
-        requestWrapper.request(putOptions, (err, res, bodyStr) => resolve([res, bodyStr]))
+      const [response, resBodyStr] = await new Promise((resolve) => {
+        sut.request(putOptions, (err, res, bodyStr) => resolve([res, bodyStr]))
       });
 
       expect(response).toHaveProperty('status', 200);
       expect(response).toHaveProperty('headers', headers);
-      expect(response).toHaveProperty('bodyStr', bodyStr);
-      expect(bodyStr).toEqual(bodyStr);
+      expect(resBodyStr).toEqual(JSON.stringify(successResponse));
     });
 
-    it('should return error when PUT fails', async () => {
-      axios.put.mockImplementation((options, callback) => {
-        return Promise.reject({ response: { status: 400, data: errorBody, headers: { field: 'header-value' }}});
+    it('should return error when PUT is rejected', async () => {
+      global.fetch.mockRejectedValue({
+        status: 401,
+        json: errorBody
       });
-      const requestWrapper = new AxiosRequestWrapper();
+      const sut = new FetchRequestWrapper();
 
       const [error, bodyStr] = await new Promise((resolve) => {
-        requestWrapper.request(putOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
+        sut.request(putOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
       });
 
-      expect(error.response).toHaveProperty('status', 400);
-      expect(error.response).toHaveProperty('headers', headers);
-      expect(error.response).toHaveProperty('data', errorBody);
-      expect(bodyStr).toEqual(errorBody);
+      expect(error).toHaveProperty('status', 401);
+      expect(error).toHaveProperty('json', errorBody);
     });
 
-    it('should return error when GET is successful', async () => {
-      axios.get.mockImplementation((options, callback) => {
-        return Promise.resolve({ status: 200, data: successBody, headers: headers});
-      });
-      const requestWrapper = new AxiosRequestWrapper();
+    it('should return response when GET is successful', async () => {
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(successResponse)
+        })
+      );
+      const sut = new FetchRequestWrapper();
 
-      const [response, bodyStr] = await new Promise((resolve) => {
-        requestWrapper.request(getOptions, (err, res, bodyStr) => resolve([res, bodyStr]))
+      const [response, resBodyStr] = await new Promise((resolve) => {
+        sut.request(getOptions, (err, res, bodyStr) => resolve([res, bodyStr]))
       });
 
       expect(response).toHaveProperty('status', 200);
       expect(response).toHaveProperty('headers', headers);
-      expect(response).toHaveProperty('bodyStr', bodyStr);
-      expect(bodyStr).toEqual(bodyStr);
+      expect(resBodyStr).toEqual(JSON.stringify(successResponse));
     });
 
-    it('should return error when GET fails with null response data', async () => {
-      axios.get.mockImplementation((options, callback) => {
-        return Promise.reject(null);
+    it('should return error when GET is rejected', async () => {
+      global.fetch.mockRejectedValue({
+        status: 401,
+        json: errorBody
       });
-      const requestWrapper = new AxiosRequestWrapper();
+      const sut = new FetchRequestWrapper();
 
       const [error, bodyStr] = await new Promise((resolve) => {
-        requestWrapper.request(getOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
+        sut.request(getOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
       });
 
-      expect(bodyStr).toEqual(null);
-      expect(error).toEqual(null);
-    });
-
-    it('should return error when GET fails with empty response data', async () => {
-      axios.get.mockImplementation((options, callback) => {
-        return Promise.reject({});
-      });
-      const requestWrapper = new AxiosRequestWrapper();
-
-      const [error, bodyStr] = await new Promise((resolve) => {
-        requestWrapper.request(getOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
-      });
-
-      expect(bodyStr).toEqual(null);
-      expect(error).toEqual({});
-    });
-
-     it('should return error when GET fails', async () => {
-      axios.get.mockImplementation((options, callback) => {
-        return Promise.reject({ response: { status: 400, data: errorBody, headers: headers}});
-      });
-      const requestWrapper = new AxiosRequestWrapper();
-
-      const [error, bodyStr] = await new Promise((resolve) => {
-        requestWrapper.request(getOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
-      });
-
-      expect(error.response).toHaveProperty('status', 400);
-      expect(error.response).toHaveProperty('headers', headers);
-      expect(error.response).toHaveProperty('data', errorBody);
-      expect(bodyStr).toEqual(errorBody);
+      expect(error).toHaveProperty('status', 401);
+      expect(error).toHaveProperty('json', errorBody);
     });
 
     it('should log error for an unsupported method', async () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-      axios.patch.mockImplementation((options, callback) => {
+      global.fetch.mockImplementation((options, callback) => {
         return Promise.reject({ response: { status: 400, data: errorBody, headers: headers}});
       });
       const options = { method: 'DELETE', field: 'value' }
-      const requestWrapper = new AxiosRequestWrapper();
+      const requestWrapper = new FetchRequestWrapper();
 
       requestWrapper.request(options, null);
 
@@ -165,7 +170,7 @@ describe('AxiosRequestWrapper', () => {
       consoleSpy.mockRestore();
     });
 
-    describe('AxiosRequestWrapper', () => {
+    describe('FetchRequestWrapper', () => {
       it('should throw an error when request method is called', () => {
         const requestWrapper = new RequestWrapper();
 

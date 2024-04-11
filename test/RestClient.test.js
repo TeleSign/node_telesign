@@ -1,9 +1,7 @@
 const RestClient = require('../src/RestClient');
 const Constants = require('../src/Constants');
 const querystring = require('querystring');
-const AxiosRequestWrapperMock = require('./RequestWrapperMock');
-const { v4: uuidV4Js, validate: uuidValidate, version: uuidVersion } = require('uuid');
-const os = require('os');
+const FetchRequestWrapperMock = require('./RequestWrapperMock');
 const TeleSignSDK = require('../src/TeleSign');
 const MessagingClient = require('../src/MessagingClient.js');
 const AppVerifyClient = require('../src/AppVerifyClient.js');
@@ -30,7 +28,7 @@ describe('RestClient', () => {
     userAgent
   );
 
-  const requestWrapper = new AxiosRequestWrapperMock({ statusCode: 200, body: 'Custom response' });
+  const requestWrapper = new FetchRequestWrapperMock({ statusCode: 200, body: 'Custom response' });
 
   describe('constructor', () => {
     it('should set default values if optional parameters are not provided', () => {
@@ -60,14 +58,21 @@ describe('RestClient', () => {
       expect(rc.apiKey).toBe(apiKey);
     });
 
-    it('should set userAgent to UNKNOWN', () => {
-      const osArchMock = jest.spyOn(os, 'arch').mockImplementation(() => {
-        throw new Error('Mocked error from os.arch');
-      });
+    it('should set userAgent to the expected value', () => {
       const rc = new RestClient(requestWrapper, customerId, apiKey);
 
+      expect(rc.userAgent).toContain('TeleSignSDK/ECMAScript-Node v ');
+    });
+
+    it('should return default userAgent on error', () => {
+      const parseSpy = jest.spyOn(JSON, 'parse').mockImplementation(() => {
+        throw new Error('Test error')
+      });
+
+      const rc = new RestClient(requestWrapper, customerId, apiKey);
+
+      parseSpy.mockRestore();
       expect(rc.userAgent).toBe('TeleSignSDK/ECMAScript-Node v-UNKNOWN');
-      osArchMock.mockRestore();
     });
   });
 
@@ -275,8 +280,9 @@ describe('RestClient', () => {
     });
 
     test('Test generate telesign headers default date and nonce', () => {
-      function uuidValidateV4(uuid) {
-        return uuidValidate(uuid) && uuidVersion(uuid) === 4;
+      function isValidUUID(uuid) {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        return uuidRegex.test(uuid);
       }
       const methodName = 'GET';
       const resource = '/v1/resource';
@@ -293,7 +299,7 @@ describe('RestClient', () => {
           null,
           null,
           '9999999');
-      const uuid = uuidValidate(actualHeaders['x-ts-nonce'])
+      const uuid = isValidUUID(actualHeaders['x-ts-nonce']);
 
       expect(uuid).toBeTruthy();
     });
@@ -303,7 +309,7 @@ describe('RestClient', () => {
     it('should make a successful GET request', async () => {
       const response = { statusCode: 200 }
       const expectedResponse = { message: 'Successful response' }
-      const requestWrapper = new AxiosRequestWrapperMock(response, null, expectedResponse);
+      const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse);
       const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
       const resource = '/test';
 
@@ -317,7 +323,7 @@ describe('RestClient', () => {
     it('should make a successful GET request with a valid Date header field', async () => {
       const response = { statusCode: 200 }
       const expectedResponse = { message: 'Successful response' }
-      const requestWrapper = new AxiosRequestWrapperMock(response, null, expectedResponse);
+      const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse);
       const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
       const resource = '/test';
       const originalToUTCString = Date.prototype.toUTCString;
@@ -335,7 +341,7 @@ describe('RestClient', () => {
       const response = { statusCode: 200 }
       const expectedResponse = { message: 'Successful response' }
       var actualOptions = null
-      const requestWrapper = new AxiosRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
+      const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
       const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
       const resource = '/test';
       const params = { key1: 'value1', key2: 'value2' }
@@ -363,7 +369,7 @@ describe('RestClient', () => {
       const response = { statusCode: 200 }
       const expectedResponse = { message: 'Successful response' }
       var actualOptions = null
-      const requestWrapper = new AxiosRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
+      const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
       const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
       const resource = '/test';
       const params = { key1: 'value1', key2: 'value2' }
@@ -376,7 +382,7 @@ describe('RestClient', () => {
     it('should handle errors during the request', async () => {
       const expectedError = new Error('Request error');
       const responseBody = { message: 'Mocked Error response' }
-      const requestWrapper = new AxiosRequestWrapperMock(null, expectedError, responseBody);
+      const requestWrapper = new FetchRequestWrapperMock(null, expectedError, responseBody);
       const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
       const methodName = 'GET';
       const resource = '/example/resource';
@@ -400,7 +406,7 @@ describe('RestClient', () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       const expectedError = new Error('Request error');
       const responseBody = { message: 'Mocked Error response' }
-      const requestWrapper = new AxiosRequestWrapperMock(null, expectedError, responseBody);
+      const requestWrapper = new FetchRequestWrapperMock(null, expectedError, responseBody);
       const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
       const methodName = 'GET';
       const resource = '/example/resource';
@@ -424,7 +430,7 @@ describe('RestClient', () => {
       const response = { statusCode: 200 }
       const expectedResponse = { message: 'Successful response' }
       var actualOptions = null
-      const requestWrapper = new AxiosRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
+      const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
       const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
       const jsonParams = { key1: 'value1', key2: 'value2' };
       const nonce = 'FD7E3E50-6F1A-4BAF-9A5C-2F11B9A5B654';
@@ -458,7 +464,7 @@ describe('RestClient', () => {
       const response = { statusCode: 200 }
       const expectedResponse = { message: 'Successful response' }
       var actualOptions = null
-      const requestWrapper = new AxiosRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
+      const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
       const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
       const jsonParams = { key1: 'value1', key2: 'value2' };
       const nonce = 'FD7E3E50-6F1A-4BAF-9A5C-2F11B9A5B654';
@@ -493,7 +499,7 @@ describe('RestClient', () => {
       const response = { statusCode: 200 }
       const expectedResponse = { message: 'Successful response' }
       var actualOptions = null
-      const requestWrapper = new AxiosRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
+      const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
       const contentType = 'application/json'
       const telesign = new RestClient(
         requestWrapper,
@@ -524,7 +530,7 @@ describe('RestClient', () => {
       const response = { statusCode: 200 }
       const expectedResponse = { message: 'Successful response' }
       var actualOptions = null
-      const requestWrapper = new AxiosRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
+      const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => actualOptions = options);
       const telesign = new RestClient(
         requestWrapper,
         'customerId',

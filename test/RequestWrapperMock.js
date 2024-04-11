@@ -1,6 +1,6 @@
 const { RequestWrapper } = require('../src/RequestWrapper');
 
-class AxiosRequestWrapperMock extends RequestWrapper {
+class FetchRequestWrapperMock extends RequestWrapper {
   constructor(mockResponse, mockError, responseBody, optionsCallback) {
     super();
     this.mockResponse = mockResponse || null;
@@ -23,4 +23,4 @@ class AxiosRequestWrapperMock extends RequestWrapper {
   }
 }
 
-module.exports = AxiosRequestWrapperMock;
+module.exports = FetchRequestWrapperMock;

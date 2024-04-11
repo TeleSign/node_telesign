@@ -5,7 +5,7 @@ const PhoneIDClient = require('./PhoneIDClient.js');
 const VoiceClient = require('./VoiceClient.js');
 const AppVerifyClient = require('./AppVerifyClient.js');
 const IntelligenceClient = require('./IntelligenceClient.js');
-const { AxiosRequestWrapper } = require('./RequestWrapper')
+const { FetchRequestWrapper } = require('./RequestWrapper')
 
 module.exports = class TeleSign {
     constructor(customerId,
@@ -14,7 +14,7 @@ module.exports = class TeleSign {
                 timeout = 15000,
                 useragent = null) {
 
-        const requestWrapper = new AxiosRequestWrapper();
+        const requestWrapper = new FetchRequestWrapper();
         this.rest = new RestClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
         this.sms = new MessagingClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
         this.voice = new VoiceClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
