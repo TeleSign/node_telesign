@@ -1,9 +1,10 @@
 const RestClient = require('../src/RestClient');
-const FetchRequestWrapperMock = require('./RequestWrapperMock');
+const { FetchRequestWrapperMock } = require('./RequestWrapperMock');
 const { RequestWrapper, FetchRequestWrapper } = require('../src/RequestWrapper');
+const { test, it, expect, mockFunction, runTests } = require('./TestFramework');
 
-// REST Client Tests -----------------------------
-describe('FetchRequestWrapper', () => {
+// RequestWrapper Client Tests -----------------------------
+async function requestWrapper() {
   const customerId = 'FFFFFFFF-EEEE-DDDD-1234-AB1234567890';
   const apiKey = 'VGVzdCBLZXk=';
   const restEndpoint = 'https://rest-api.telesign.com';
@@ -20,18 +21,15 @@ describe('FetchRequestWrapper', () => {
   const postOptions = { method: 'POST', field: 'value' };
   const putOptions = { method: 'PUT', field: 'value' };
 
-  describe('FetchRequestWrapper', () => {
+  errorResponse.json = function() { return errorResponse; };
+  successResponse.json = function() { return successResponse; };
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should return response when POST is successful', async () => {
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
+  it('should return response when POST is successful', async () => {
+      global.fetch = (url, options) => {
+        return Promise.resolve({
           json: () => Promise.resolve(successResponse)
         })
-      );
+      }
       const sut = new FetchRequestWrapper();
 
       const [response, resBodyStr] = await new Promise((resolve) => {
@@ -44,43 +42,55 @@ describe('FetchRequestWrapper', () => {
     });
 
     it('should return response when POST timeout', async () => {
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          json: () => new Promise((resolve, reject) => {
-            setTimeout(() => resolve(successResponse), 500);
-          })
-        })
-      );
+      const originalFetch = global.fetch
+      global.fetch = (url, options) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(successResponse);
+          }, 500);
+        });
+      }
       const sut = new FetchRequestWrapper();
 
-      const [response, resBodyStr] = await new Promise((resolve) => {
-        sut.request({ ...postOptions, timeout }, (err, res, bodyStr) => resolve([res, bodyStr]))
+      const [error, resBodyStr] = await new Promise((resolve) => {
+        sut.request({ ...postOptions, timeout }, (err, res, bodyStr) => resolve([err, bodyStr]))
       });
 
-      expect(response).toBe(successResponse);
+      expect(error).toHaveProperty('code', 408);
+      expect(error).toHaveProperty('message', 'Timeout');
+      global.fetch = originalFetch;
     });
 
     it('should return error when POST is rejected', async () => {
-      global.fetch.mockRejectedValue({
-        status: 401,
-        json: errorBody
-      });
+      const originalFetch = global.fetch
       const sut = new FetchRequestWrapper();
+      global.fetch = (url, options) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject(errorResponse);
+          }, 0);
+        });
+      }
 
       const [error, bodyStr] = await new Promise((resolve) => {
         sut.request(postOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
       });
 
-      expect(error).toHaveProperty('status', 401);
-      expect(error).toHaveProperty('json', errorBody);
+      const status = error.status;
+      expect(status).toHaveProperty('code', 11011);
+      expect(status).toHaveProperty('description', 'Invalid value for parameter reference_id.');
+      global.fetch = originalFetch;
     });
 
     it('should return error when POST fails', async () => {
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          json: () => Promise.resolve(errorResponse)
-        })
-      );
+      const originalFetch = global.fetch
+      global.fetch = (url, options) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(errorResponse);
+          }, 0);
+        });
+      }
       const sut = new FetchRequestWrapper();
 
       const [response, resBodyStr] = await new Promise((resolve) => {
@@ -90,14 +100,18 @@ describe('FetchRequestWrapper', () => {
       expect(response.status.code).toEqual(11011);
       expect(response.status.description).toEqual('Invalid value for parameter reference_id.');
       expect(resBodyStr).toEqual(JSON.stringify(errorResponse));
+      global.fetch = originalFetch;
     });
 
     it('should return response when PUT is successful', async () => {
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          json: () => Promise.resolve(successResponse)
-        })
-      );
+      const originalFetch = global.fetch
+      global.fetch = (url, options) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(successResponse);
+          }, 0);
+        });
+      }
       const sut = new FetchRequestWrapper();
 
       const [response, resBodyStr] = await new Promise((resolve) => {
@@ -107,29 +121,36 @@ describe('FetchRequestWrapper', () => {
       expect(response).toHaveProperty('status', 200);
       expect(response).toHaveProperty('headers', headers);
       expect(resBodyStr).toEqual(JSON.stringify(successResponse));
+      global.fetch = originalFetch;
     });
 
     it('should return error when PUT is rejected', async () => {
-      global.fetch.mockRejectedValue({
-        status: 401,
-        json: errorBody
-      });
+      const originalFetch = global.fetch
       const sut = new FetchRequestWrapper();
-
+      global.fetch = (url, options) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject(errorBody);
+          }, 0);
+        });
+      }
       const [error, bodyStr] = await new Promise((resolve) => {
         sut.request(putOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
       });
 
-      expect(error).toHaveProperty('status', 401);
-      expect(error).toHaveProperty('json', errorBody);
+      expect(error).toHaveProperty('response', 'error-response');
+      global.fetch = originalFetch;
     });
 
     it('should return response when GET is successful', async () => {
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          json: () => Promise.resolve(successResponse)
-        })
-      );
+      const originalFetch = global.fetch
+      global.fetch = (url, options) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(successResponse);
+          }, 0);
+        });
+      }
       const sut = new FetchRequestWrapper();
 
       const [response, resBodyStr] = await new Promise((resolve) => {
@@ -139,48 +160,63 @@ describe('FetchRequestWrapper', () => {
       expect(response).toHaveProperty('status', 200);
       expect(response).toHaveProperty('headers', headers);
       expect(resBodyStr).toEqual(JSON.stringify(successResponse));
+      global.fetch = originalFetch;
     });
 
     it('should return error when GET is rejected', async () => {
-      global.fetch.mockRejectedValue({
-        status: 401,
-        json: errorBody
-      });
+      const originalFetch = global.fetch
       const sut = new FetchRequestWrapper();
+      global.fetch = (url, options) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject(errorBody);
+          }, 0);
+        });
+      }
 
       const [error, bodyStr] = await new Promise((resolve) => {
         sut.request(getOptions, (err, res, bodyStr) => resolve([err, bodyStr]))
       });
 
-      expect(error).toHaveProperty('status', 401);
-      expect(error).toHaveProperty('json', errorBody);
+      expect(error).toHaveProperty('response', 'error-response');
+      global.fetch = originalFetch;
     });
 
     it('should log error for an unsupported method', async () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-      global.fetch.mockImplementation((options, callback) => {
-        return Promise.reject({ response: { status: 400, data: errorBody, headers: headers}});
-      });
+      const originalConsoleError = console.error;
+      console.error = mockFunction();
+      const originalFetch = global.fetch
+      const sut = new FetchRequestWrapper();
+      global.fetch = (url, options) => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject({ status: 400, data: errorBody, headers: headers});
+          }, 0);
+        });
+      }
+
       const options = { method: 'DELETE', field: 'value' }
       const requestWrapper = new FetchRequestWrapper();
 
       requestWrapper.request(options, null);
 
-      expect(consoleSpy).toHaveBeenCalledWith('Method: DELETE not supported!');
-      consoleSpy.mockRestore();
+      expect(console.error).toHaveBeenCalled();
+      expect(console.error.mock.calls[0][0]).toBe('Method: DELETE not supported!');
+      expect(console.error).toHaveBeenCalledTimes(1);
+      global.fetch = originalFetch;
+      console.error = originalConsoleError;
     });
 
-    describe('FetchRequestWrapper', () => {
-      it('should throw an error when request method is called', () => {
-        const requestWrapper = new RequestWrapper();
+    it('should throw an error when request method is called', () => {
+      const requestWrapper = new RequestWrapper();
 
-        try {
-          requestWrapper.request({}, () => {});
-          fail('Expected an error to be thrown, but none was thrown.');
-        } catch (error) {
-          expect(error.message).toBe('makeRequest method must be implemented.');
-        }
-      });
+      try {
+        requestWrapper.request({}, () => {});
+        fail('Expected an error to be thrown, but none was thrown.');
+      } catch (error) {
+        expect(error.message).toBe('makeRequest method must be implemented.');
+      }
     });
-  });
-});
+}
+
+module.exports = { requestWrapper };

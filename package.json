@@ -8,12 +8,11 @@
   },
   "main": "src/TeleSign.js",
   "scripts": {
-    "test": "jest --coverage"
+    "test": "node ./test/test.suite.js"
   },
   "dependencies": {
   },
   "devDependencies": {
-    "jest": "^29.7.0"
   },
   "keywords": [
     "Telesign",

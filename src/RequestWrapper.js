@@ -9,7 +9,6 @@ const handleResponse = (response, callback) => {
 };
 
 const handleError = (error, callback) => {
-  console.log('handleError', error)
   callback(error, null, error)
 };
 
