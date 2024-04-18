@@ -10,7 +10,7 @@ const handleResponse = (response, callback) => {
     headers: response.headers,
     bodyStr: JSON.stringify(response)
   }
-  callback(null, response, res.bodyStr);
+  callback(null, res, res.bodyStr);
 };
 
 const handleError = (error, callback) => {
