@@ -5,7 +5,6 @@ class RequestWrapper {
 }
 
 const handleResponse = (response, callback) => {
-  console.log(response)
   const res = {
     status: response.status,
     headers: response.headers,
