@@ -5,7 +5,13 @@ class RequestWrapper {
 }
 
 const handleResponse = (response, callback) => {
-  callback(null, response, JSON.stringify(response));
+  console.log(response)
+  const res = {
+    status: response.status,
+    headers: response.headers,
+    bodyStr: JSON.stringify(response)
+  }
+  callback(null, response, res.bodyStr);
 };
 
 const handleError = (error, callback) => {
