@@ -1,54 +1,64 @@
-const axios = require('axios');
-
 class RequestWrapper {
   request(options, callback) {
     throw new Error('makeRequest method must be implemented.');
   }
 }
 
-const handleSuccess = (response, callback) => {
+const handleResponse = (response, callback) => {
   const res = {
     status: response.status,
     headers: response.headers,
-    bodyStr: JSON.stringify(response.data)
+    bodyStr: JSON.stringify(response)
   }
-  callback(null, res, res.bodyStr)
+  callback(null, res, res.bodyStr);
 };
 
-const handleFailure = (error, callback) => {
-  var body = null
-  try {
-    body = error.response.data;
-  } catch (error) {
-    body = null;
-  }
-  callback(error, null, body)
+const handleError = (error, callback) => {
+  callback(error, null, error)
 };
 
-class AxiosRequestWrapper extends RequestWrapper {
+function fetchWithTimeout(url, options) {
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) => setTimeout(() => reject({ code: 408, message: 'Timeout' }), options.timeout))
+  ]);
+}
+
+class FetchRequestWrapper extends RequestWrapper {
 
   request(options, callback) {
     switch (options.method) {
     case 'POST':
-      axios.post(options.url, options.body, {
-        headers: options.headers
+      fetchWithTimeout(options.url, {
+        method: options.method,
+        headers: options.headers,
+        body: options.body,
+        timeout: options.timeout
       })
-      .then(response => handleSuccess(response, callback))
-      .catch(error => handleFailure(error, callback));
+        .then(response => response.json())
+        .then(data => handleResponse(data, callback))
+        .catch(error => handleError(error, callback));
       break;
     case 'PUT':
-      axios.put(options.url, options.body, {
-        headers: options.headers
+      fetchWithTimeout(options.url, {
+        method: options.method,
+        headers: options.headers,
+        body: options.body,
+        timeout: options.timeout
       })
-      .then(response => handleSuccess(response, callback))
-      .catch(error => handleFailure(error, callback));
+        .then(response => response.json())
+        .then(data => handleResponse(data, callback))
+        .catch(error => handleError(error, callback));
       break;
     case 'GET':
-      axios.get(options.url, {
-        headers: options.headers
+      fetchWithTimeout(options.url, {
+        method: options.method,
+        headers: options.headers,
+        timeout: options.timeout
       })
-      .then(response => handleSuccess(response, callback))
-      .catch(error => handleFailure(error, callback));
+        .then(response => response.json())
+        .then(data => handleResponse(data, callback))
+        .catch(error => handleError(error, callback));
       break;
     default:
       console.error('Method: ' + options.method + ' not supported!');
@@ -58,5 +68,5 @@ class AxiosRequestWrapper extends RequestWrapper {
 
 module.exports = {
   RequestWrapper,
-  AxiosRequestWrapper
+  FetchRequestWrapper
 };
