@@ -28,13 +28,15 @@ class MessagingClient extends RestClient {
      * @param phoneNumber: Phone number to call
      * @param message: Text of the message to be sent to the end user.
      * @param messageType: This parameter specifies the traffic type being sent in the message.
+     * @param senderId: This parameter specifies the sender name which will be displayed to the end user.
      * transaction.
      */
-    message(callback, phoneNumber, message, messageType) {
+    message(callback, phoneNumber, message, messageType, senderId) {
         var params = {
             phone_number: phoneNumber,
             message: message,
-            message_type: messageType
+            message_type: messageType,
+            sender_id: senderId
         };
         this.execute(callback, "POST", this.messaging_resource, params);
     }
