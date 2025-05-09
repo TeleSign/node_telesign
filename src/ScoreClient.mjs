@@ -1,9 +1,9 @@
-const RestClient = require('./RestClient.js');
+import RestClient from './RestClient.mjs';
 
 /***
  * Score provides risk information about a specified phone number.
  */
-class ScoreClient extends RestClient {
+export default class ScoreClient extends RestClient {
     constructor(requestWrapper,
                 customerId,
                 apiKey,
@@ -64,5 +64,3 @@ class ScoreClient extends RestClient {
         this.execute(callback, "POST", this.scoreResource + encodeURI(phoneNumber), params);
     }
 }
-
-module.exports = ScoreClient;

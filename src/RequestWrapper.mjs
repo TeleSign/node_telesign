@@ -1,4 +1,4 @@
-class RequestWrapper {
+export class RequestWrapper {
   request(options, callback) {
     throw new Error('makeRequest method must be implemented.');
   }
@@ -17,15 +17,19 @@ const handleError = (error, callback) => {
   callback(error, null, error)
 };
 
-function fetchWithTimeout(url, options) {
-  const fetch = require('node-fetch');
-  return Promise.race([
+async function fetchWithTimeout(url, options) {
+  /** @type {any} */
+  let fetch = (typeof window !== 'undefined' ? window : global).fetch || null;
+  if (!fetch) {
+    fetch = await import('node-fetch').then(m => m.default ?? m);
+  }
+  return await Promise.race([
     fetch(url, options),
     new Promise((_, reject) => setTimeout(() => reject({ code: 408, message: 'Timeout' }), options.timeout))
   ]);
 }
 
-class FetchRequestWrapper extends RequestWrapper {
+export class FetchRequestWrapper extends RequestWrapper {
 
   request(options, callback) {
     switch (options.method) {
@@ -66,8 +70,3 @@ class FetchRequestWrapper extends RequestWrapper {
     }
   }
 }
-
-module.exports = {
-  RequestWrapper,
-  FetchRequestWrapper
-};

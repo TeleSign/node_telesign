@@ -1,5 +1,5 @@
 // note change this to the following if using npm package: require('telesignsdk);
-const TeleSignSDK = require('../../src/TeleSign');
+const TeleSignSDK = require('../../dist/cjs/TeleSign');
 //var TeleSignSDK = require('telesignsdk');
 
 const customerId = "customer_id"; // Todo: find in portal.telesign.com

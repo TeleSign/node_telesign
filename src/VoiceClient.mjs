@@ -1,11 +1,11 @@
-const RestClient = require('./RestClient.js');
+import RestClient from './RestClient.mjs';
 
 /***
  * TeleSign's Voice API allows you to easily send voice messages. You can send alerts,
  * reminders, and notifications, or you can send verification messages containing time-based,
  * one-time passcodes (TOTP).
  */
-class VoiceClient extends RestClient {
+export default class VoiceClient extends RestClient {
 
     constructor(requestWrapper,
                 customerId,
@@ -79,5 +79,3 @@ class VoiceClient extends RestClient {
         this.execute(callback, "GET", status_resource);
     }
 }
-
-module.exports = VoiceClient;

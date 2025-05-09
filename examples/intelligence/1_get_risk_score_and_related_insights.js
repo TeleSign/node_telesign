@@ -1,4 +1,4 @@
-const TeleSignSDK = require('../../src/TeleSign');
+const TeleSignSDK = require('../../dist/cjs/TeleSign');
 
 const customerId = "your_customer_id_2XT08ZA8-CA-4892-8888-ABXCAA8"; // Your customer id. Ensure your account has access to Intelligence product.
 const apiKey = "your_api_key"; // Your API key.

@@ -13,7 +13,7 @@ let failedCount = 0;
 
 let allTestsCompleted = false;
 
-async function test(testDescription, testFunction) {
+export async function test(testDescription, testFunction) {
   try {
     const result = testFunction();
     if (result instanceof Promise) {
@@ -40,11 +40,11 @@ async function test(testDescription, testFunction) {
   }
 }
 
-async function it(testDescription, testFunction) {
+export async function it(testDescription, testFunction) {
   await test(testDescription, testFunction);
 }
 
-function mockFunction() {
+export function mockFunction() {
   let callCount = 0;
   const mockFn = function (...args) {
     callCount++;
@@ -62,7 +62,7 @@ function mockFunction() {
   return mockFn;
 }
 
-function expect(value) {
+export function expect(value) {
   const calledArgs = [];
 
   return {
@@ -160,14 +160,13 @@ function printResult() {
   console.log(`${colors.bold}Tests: ${colors.green}${passedCount} passed${colors.reset}, ${colors.bold}${colors.red}${failedCount} failed${colors.reset}, ${colors.bold}${colors.white}${passedCount + failedCount} total${colors.reset}`);
 }
 
-async function waitForTests() {
+export async function waitForTests() {
   await new Promise(resolve => setTimeout(resolve, 0));
   allTestsCompleted = true;
 }
 
-async function runTests() {
+export async function runTests() {
   await waitForTests();
   printResult();
 }
 
-module.exports = { test, it, expect, mockFunction, waitForTests, runTests };

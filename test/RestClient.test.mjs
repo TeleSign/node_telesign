@@ -1,19 +1,18 @@
-const RestClient = require('../src/RestClient');
-const Constants = require('../src/Constants');
-const querystring = require('querystring');
-const FetchRequestWrapperMock = require('./RequestWrapperMock');
-const TeleSignSDK = require('../src/TeleSign');
-const MessagingClient = require('../src/MessagingClient.js');
-const AppVerifyClient = require('../src/AppVerifyClient.js');
-const IntelligenceClient = require('../src/IntelligenceClient.js');
-const VoiceClient = require('../src/VoiceClient.js');
-const PhoneIDClient = require('../src/PhoneIDClient.js');
-const ScoreClient = require('../src/ScoreClient.js');
-const { test, it, expect, mockFunction, runTests } = require('./TestFramework');
+import RestClient from '../src/RestClient.mjs';
+import { AuthMethodNames } from '../src/Constants.mjs';
+import { FetchRequestWrapperMock } from './RequestWrapperMock.mjs';
+import TeleSignSDK from '../src/TeleSign.mjs';
+import MessagingClient from '../src/MessagingClient.mjs';
+import AppVerifyClient from '../src/AppVerifyClient.mjs';
+import IntelligenceClient from '../src/IntelligenceClient.mjs';
+import VoiceClient from '../src/VoiceClient.mjs';
+import PhoneIDClient from '../src/PhoneIDClient.mjs';
+import ScoreClient from '../src/ScoreClient.mjs';
+import { test, it, expect, mockFunction, runTests } from './TestFramework.mjs';
 
 
 // REST Client Tests -----------------------------
-async function restClient() {
+export async function restClient() {
   const customerId = 'FFFFFFFF-EEEE-DDDD-1234-AB1234567890';
   const apiKey = 'VGVzdCBLZXk=';
   const restEndpoint = 'https://rest-api.telesign.com';
@@ -59,7 +58,7 @@ async function restClient() {
 
   it('should change the attribute restEndpoint', () => {
     const telesign = new RestClient(requestWrapper, customerId, apiKey);
-    
+
     expect(telesign.restEndpoint).toEqual("https://rest-api.telesign.com");
 
     const newRestEndpoint = "https://telesign.com";
@@ -93,18 +92,6 @@ async function restClient() {
     expect(rc.userAgent).toContain('OriginatingSDK/node_telesign');
   });
 
-  it('should return default userAgent on error', () => {
-    const originalJSONParse = JSON.parse;
-    JSON.parse = () => {
-      throw new Error('Test error');
-    };
-
-    const rc = new RestClient(requestWrapper, customerId, apiKey);
-
-    JSON.parse = originalJSONParse;
-    expect(rc.userAgent).toBe('TeleSignSDK/ECMAScript-Node v-UNKNOWN');
-  });
-
   it('should generate headers for HMAC authentication', () => {
     const customerId = 'yourCustomerId';
     const apiKey = 'yourApiKey';
@@ -134,7 +121,7 @@ async function restClient() {
       date,
       nonce,
       userAgent,
-      Constants.AuthMethodNames.HMAC_SHA256
+      AuthMethodNames.HMAC_SHA256
     );
 
     expect(actualHeaders).toEqual(expectedHeaders);
@@ -169,7 +156,7 @@ async function restClient() {
       date,
       nonce,
       userAgent,
-      Constants.AuthMethodNames.BASIC
+      AuthMethodNames.BASIC
     );
 
     expect(actualHeaders).toEqual(expectedHeaders);
@@ -212,8 +199,7 @@ async function restClient() {
     const resource = '/v1/resource';
     const bodyParamsURLEncoded = 'test=param';
     const contentType = "application/x-www-form-urlencoded";
-    const expectedAuthorizationHeader =
-        'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:vXw/XzywdhgfEG2/zWLaFp7oXmjLB8iJDMndvDbZMjk=';
+    const expectedAuthorizationHeader = 'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:vXw/XzywdhgfEG2/zWLaFp7oXmjLB8iJDMndvDbZMjk=';
 
     const actualHeaders = RestClient.generateTeleSignHeaders(
       customerId,
@@ -239,8 +225,7 @@ async function restClient() {
     const resource = '/v1/resource';
     const bodyParamsURLEncoded = 'test=param';
     const contentType = "application/json";
-    const expectedAuthorizationHeader =
-        'Basic RkZGRkZGRkYtRUVFRS1ERERELTEyMzQtQUIxMjM0NTY3ODkwOlZHVnpkQ0JMWlhrPQ==';
+    const expectedAuthorizationHeader = 'Basic RkZGRkZGRkYtRUVFRS1ERERELTEyMzQtQUIxMjM0NTY3ODkwOlZHVnpkQ0JMWlhrPQ==';
 
     const actualHeaders = RestClient.generateTeleSignHeaders(
       customerId,
@@ -252,7 +237,7 @@ async function restClient() {
       date,
       nonce,
       'unit_test',
-      Constants.AuthMethodNames.BASIC
+      AuthMethodNames.BASIC
     );
 
     expect(actualHeaders['Authorization']).toBe(expectedAuthorizationHeader);
@@ -293,8 +278,7 @@ async function restClient() {
     const nonce = 'A1592C6F-E384-4CDB-BC42-C3AB970369E9';
     const resource = '/v1/resource';
     const contentType = "application/x-www-form-urlencoded";
-    expectedAuthorizationHeader =
-        'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:wscyrZZtA7kdXu0i4D5KXyDmBcwH52JF1feiEKp+ir0=';
+    const expectedAuthorizationHeader = 'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:wscyrZZtA7kdXu0i4D5KXyDmBcwH52JF1feiEKp+ir0=';
 
     const actualHeaders = RestClient.generateTeleSignHeaders(
       customerId,
@@ -376,9 +360,9 @@ async function restClient() {
     const expectedResponse = { message: 'Successful response' }
     var optionsSent = null
     const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => optionsSent = options);
-    
+
     const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
-    
+
     const resource = '/test';
     const params = { key1: 'value1', key2: 'value2' }
     const nonce = 'A1592C6F-E384-4CDB-BC42-C3AB970369E9';
@@ -480,7 +464,7 @@ async function restClient() {
         'POST',
         '/v1/resource',
         jsonParams,
-        Constants.AuthMethodNames.HMAC_SHA256,
+        AuthMethodNames.HMAC_SHA256,
         nonce,
         date
       );
@@ -517,7 +501,7 @@ async function restClient() {
         'PUT',
         '/v1/resource',
         jsonParams,
-        Constants.AuthMethodNames.HMAC_SHA256,
+        AuthMethodNames.HMAC_SHA256,
         nonce,
         date
       );
@@ -565,7 +549,7 @@ async function restClient() {
         'PUT',
         '/v1/resource',
         jsonParams,
-        Constants.AuthMethodNames.HMAC_SHA256
+        AuthMethodNames.HMAC_SHA256
       );
     });
 
@@ -598,7 +582,7 @@ async function restClient() {
         'PUT',
         '/v1/resource',
         params,
-        Constants.AuthMethodNames.HMAC_SHA256
+        AuthMethodNames.HMAC_SHA256
       );
     });
 
@@ -612,7 +596,7 @@ async function restClient() {
     telesign.rest.execute = mockFunction();
 
     telesign.rest.execute(callback, "GET", "/resource/test");
-    telesign.rest.execute(callback, "POST", "/resource/test", params = { 'mdr': 'beautiful' });
+    telesign.rest.execute(callback, "POST", "/resource/test", { 'mdr': 'beautiful' });
   });
 
   // Product tests -------------------------
@@ -734,7 +718,7 @@ async function restClient() {
 
     telesign.intelligence.intelligence(callback, requestBody);
 
-    expect(telesign.intelligence.execute).toHaveBeenCalledWith(callback, "POST", "/intelligence", {}, Constants.AuthMethodNames.BASIC);
+    expect(telesign.intelligence.execute).toHaveBeenCalledWith(callback, "POST", "/intelligence", {}, AuthMethodNames.BASIC);
     expect(telesign.intelligence.execute).toHaveBeenCalledTimes(1);
   });
 
@@ -751,7 +735,7 @@ async function restClient() {
     expect(intelligenceClient.execute.mock.calls[0][1]).toBe("POST");
     expect(intelligenceClient.execute.mock.calls[0][2]).toBe("/intelligence");
     expect(intelligenceClient.execute.mock.calls[0][3]).toEqual({});
-    expect(intelligenceClient.execute.mock.calls[0][4]).toEqual(Constants.AuthMethodNames.BASIC);
+    expect(intelligenceClient.execute.mock.calls[0][4]).toEqual(AuthMethodNames.BASIC);
     expect(intelligenceClient.execute).toHaveBeenCalledTimes(1);
   });
 
@@ -932,5 +916,3 @@ async function restClient() {
 
   console.error = originalConsoleError;
 }
-
-module.exports = { restClient };

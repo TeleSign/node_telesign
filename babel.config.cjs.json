@@ -1,0 +1,19 @@
+{
+    "presets": [
+        [ "@babel/preset-env" ]
+    ],
+    "plugins": [
+        [ "@babel/plugin-syntax-import-assertions" ],
+        [ "./babel-plugin.js" ],
+        [
+            "babel-plugin-replace-import-extension",
+            {
+                "extMapping": {
+                    ".mjs": ""
+                }
+            }
+        ],
+        ["@babel/plugin-transform-modules-commonjs", { "allowTopLevelThis": true }],
+        [ "babel-plugin-add-module-exports" ]
+    ]
+}

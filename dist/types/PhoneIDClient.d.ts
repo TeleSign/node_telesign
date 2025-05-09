@@ -1,23 +1,10 @@
-const RestClient = require("./RestClient.js");
-
 /***
  * A set of APIs that deliver deep phone number data attributes that help optimize the end user
  * verification process and evaluate risk.
  */
-class PhoneIDClient extends RestClient {
-
-    constructor(requestWrapper,
-                customerId,
-                apiKey,
-                restEndpoint = null,
-                timeout = 15000,
-                useragent = null) {
-        super(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
-
-        this.phoneid_resource = "/v1/phoneid/";
-        this.contentType = "application/json";
-    }
-
+export default class PhoneIDClient extends RestClient {
+    constructor(requestWrapper: any, customerId: any, apiKey: any, restEndpoint?: any, timeout?: number, useragent?: any);
+    phoneid_resource: string;
     /***
      * The PhoneID API provides a cleansed phone number, phone type, and telecom carrier
      * information to determine the best communication method - SMS or voice.
@@ -30,9 +17,6 @@ class PhoneIDClient extends RestClient {
      * transaction.
      * @param originatingIP: IP address of request origination host
      */
-    phoneID(callback, phoneNumber, params = null) {
-        this.execute(callback, "POST", this.phoneid_resource + encodeURI(phoneNumber), params);
-    }
+    phoneID(callback: any, phoneNumber: any, params?: any): void;
 }
-
-module.exports = PhoneIDClient;
+import RestClient from './RestClient';

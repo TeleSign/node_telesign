@@ -1,17 +1,30 @@
 {
   "name": "telesignsdk",
-  "version": "3.0.3",
+  "version": "4.0.0",
   "description": "Official TeleSign SDK for Rest APIs including Messaging (SMS), Score, PhoneID, Voice, and AppVerify",
   "repository": {
     "type": "git",
     "url": "https://github.com/TeleSign/node_telesign"
   },
-  "main": "src/TeleSign.js",
-  "scripts": {
-    "test": "node ./test/test.suite.js"
+  "main": "dist/cjs/TeleSign.js",
+  "module": "dist/esm/TeleSign.js",
+  "types": "dist/types/TeleSign.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/TeleSign.js",
+      "import": "./dist/esm/TeleSign.js"
+    }
   },
-  "dependencies": {
-    "node-fetch": "^2.7.0"
+  "scripts": {
+    "test": "node test/test.suite.mjs",
+    "build:cjs": "babel src --out-dir dist/cjs --extensions \".js,.mjs\" --config-file ./babel.config.cjs.json ",
+    "build:esm": "babel src --out-dir dist/esm --extensions \".js,.mjs\" --config-file ./babel.config.esm.json",
+    "build:types": "tsc",
+    "build:fix-file": "mv -f dist/src dist/types && find dist/types -name \"*.d.mts\" -exec sh -c 'mv \"$0\" \"${0%.d.mts}.d.ts\"' {} \\; && find dist/types -name \"*.d.ts\" -exec sed -i 's/\\.mjs//g' {} \\;",
+    "build": "rm -rf dist && npm run build:cjs && npm run build:esm && npm run build:types && npm run build:fix-file"
+  },
+  "peerDependencies": {
+    "node-fetch": "^2.6.0 || ^3.0.0"
   },
   "keywords": [
     "Telesign",
@@ -31,5 +44,16 @@
   ],
   "author": "TeleSign Corp.",
   "email": "sdk@telesign.com",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.26.4",
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-syntax-import-assertions": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@types/node": "^22.10.7",
+    "@types/node-fetch": "^2.6.12",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "babel-plugin-replace-import-extension": "^1.1.4",
+    "typescript": "^5.7.3"
+  }
 }

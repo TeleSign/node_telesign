@@ -1,10 +1,8 @@
-const RestClient = require('../src/RestClient');
-const { FetchRequestWrapperMock } = require('./RequestWrapperMock');
-const { RequestWrapper, FetchRequestWrapper } = require('../src/RequestWrapper');
-const { test, it, expect, mockFunction, runTests } = require('./TestFramework');
+import {FetchRequestWrapper, RequestWrapper} from '../src/RequestWrapper.mjs';
+import {expect, it, mockFunction} from './TestFramework.mjs';
 
 // RequestWrapper Client Tests -----------------------------
-async function requestWrapper() {
+export async function requestWrapper() {
   const customerId = 'FFFFFFFF-EEEE-DDDD-1234-AB1234567890';
   const apiKey = 'VGVzdCBLZXk=';
   const restEndpoint = 'https://rest-api.telesign.com';
@@ -218,5 +216,3 @@ async function requestWrapper() {
       }
     });
 }
-
-module.exports = { requestWrapper };

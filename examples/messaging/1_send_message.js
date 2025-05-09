@@ -1,6 +1,6 @@
 // note change this to the following if using npm package: require('telesignsdk);
-const TeleSignSDK = require('../../src/TeleSign');
-//var TeleSignSDK = require('telesignsdk');
+const TeleSignSDK = require('../../dist/cjs/TeleSign');
+//const TeleSignSDK = require('telesignsdk');
 
 const customerId = "customer_id"; // Todo: find in portal.telesign.com
 const apiKey = "dGVzdCBhcGkga2V5IGZvciBzZGsgZXhhbXBsZXM="; // Todo: find in portal.telesign.com

@@ -1,10 +1,10 @@
-const RestClient = require("./RestClient.js");
+import RestClient from './RestClient.mjs';
 
 /***
  * App Verify is a secure, lightweight SDK that integrates a frictionless user verification
  * process into existing native mobile applications.
  */
-class AppVerifyClient extends RestClient {
+export default class AppVerifyClient extends RestClient {
 
     constructor(requestWrapper,
                 customerId,
@@ -27,5 +27,3 @@ class AppVerifyClient extends RestClient {
         this.execute(callback, "GET", this.appverify_resource + externalId);
     }
 }
-
-module.exports = AppVerifyClient;

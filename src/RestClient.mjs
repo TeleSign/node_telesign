@@ -1,6 +1,6 @@
-const crypto = require("crypto");
-const Constants = require('./Constants.js');
-const { getInstalledVersion } = require('./Util.js');
+import crypto from 'crypto';
+import { AuthMethodNames } from './Constants.mjs';
+import { getInstalledVersion } from './Util.mjs';
 
 /***
  * The TeleSign RestClient is a generic HTTP REST client that can be extended to make
@@ -8,7 +8,7 @@ const { getInstalledVersion } = require('./Util.js');
  *
  * See https://developer.telesign.com for detailed API documentation.
  */
-class RestClient {
+export default class RestClient {
 
     constructor(requestWrapper,
                 customerId,
@@ -28,23 +28,14 @@ class RestClient {
         this.contentType = contentType ;
         const currentVersionSdk = sdkVersionOrigin || getInstalledVersion()
 
-        try {
-            if (userAgent === null) {
-                this.userAgent = `TeleSignSDK/ECMAScript-Node`
-                    + ` ${process.arch}`
-                    + `/${process.platform}`
-                    + ` ${process.release.name}`
-                    + `/${process.version}` // Generates a Node useragent - helpful in diagnosing errors
-                    + ` OriginatingSDK/${source}`
-                    + ` SDKVersion/${currentVersionSdk}`
-                    + (source !== "node_telesign" ? ` DependencySDKVersion/${sdkVersionDependency}` : ``);
-            }
-        }
-        catch (err) {
-            this.userAgent = "TeleSignSDK/ECMAScript-Node v-UNKNOWN";
-            console.error("WARNING: Trouble determining OS Specific information for user agent");
-        }
-
+        this.userAgent = `TeleSignSDK/ECMAScript-Node`
+            + ` ${process.arch}`
+            + `/${process.platform}`
+            + ` ${process.release.name}`
+            + `/${process.version}` // Generates a Node useragent - helpful in diagnosing errors
+            + ` OriginatingSDK/${source}`
+            + ` SDKVersion/${currentVersionSdk}`
+            + (source !== "node_telesign" ? ` DependencySDKVersion/${sdkVersionDependency}` : ``);
     }
 
 
@@ -91,12 +82,13 @@ class RestClient {
 
         var contentType = (methodName == "POST" || methodName == "PUT") ?
             contentType : "";
-        var authMethod = authMethod!=null ? authMethod: Constants.AuthMethodNames.HMAC_SHA256;
+        var authMethod = authMethod!=null ? authMethod: AuthMethodNames.HMAC_SHA256;
 
         var urlencoded = "";
         if (encodedFields != null && encodedFields.length > 0) {
             urlencoded = "\n" + encodedFields;
         }
+        /** @type {any} */
         var stringToSignBuilder = methodName +
             "\n" + contentType +
             "\n" + date +
@@ -104,16 +96,18 @@ class RestClient {
             "\n" + "x-ts-nonce:" + nonce +
             urlencoded +
             "\n" + resource;
-        if(authMethod === Constants.AuthMethodNames.BASIC){
+        if(authMethod === AuthMethodNames.BASIC){
             var authorization = "Basic " + Buffer.from(customerId + ":" + apiKey).toString('base64');
         }else{
             var signedStrUTF8 = stringToSignBuilder.toString('utf8');
             var decodedAPIKey = Buffer.from(apiKey, 'base64');
 
+            /** @type {any} */
             var jsSignature = crypto.createHmac("sha256", decodedAPIKey)
                 .update(signedStrUTF8)
                 .digest("base64")
-                .toString('utf8');
+            ;
+            jsSignature = jsSignature.toString('utf8');
             // console.log("js Signature: " + jsSignature);
 
             var authorization = "TSA " + customerId + ":" + jsSignature;
@@ -175,7 +169,7 @@ class RestClient {
             nonce,
             this.userAgent,
             authMethod);
-        
+
         var requestParams = {
             headers: headers,
             url: telesignURL,
@@ -208,13 +202,17 @@ class RestClient {
 
     }
 
+    /**
+     * @param {string} restEndpoint
+     */
     setRestEndpoint(restEndpoint) {
         this.restEndpoint = restEndpoint
     }
 
+    /**
+     * @param {string} contentType
+     */
     setContentType(contentType) {
         this.contentType = contentType
     }
 }
-
-module.exports = RestClient;

@@ -1,11 +1,11 @@
-const RestClient = require("./RestClient.js");
+import RestClient from './RestClient.mjs';
 
 /***
  * TeleSign's Messaging API allows you to easily send SMS messages. You can send alerts,
  * reminders, and notifications, or you can send verification messages containing
  * one-time passcodes ( OTP ).
  */
-class MessagingClient extends RestClient {
+export default class MessagingClient extends RestClient {
 
     constructor(requestWrapper,
                 customerId,
@@ -52,5 +52,3 @@ class MessagingClient extends RestClient {
             null);
     }
 }
-
-module.exports = MessagingClient;

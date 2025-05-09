@@ -1,28 +1,12 @@
-const RestClient = require('./RestClient.js');
-const Constants = require('./Constants.js');
-
-const INTELLIGENCE_ENDPOINT_PATH = "/intelligence";
-const contentType = "application/json";
-
 /***
  * It is critical today to evaluate fraud risk throughout the entire customer journey.
  *
  * Telesign Intelligence makes it easy to understand the risk and the reason behind it with tailored scoring models
  *and comprehensive reason codes.
  */
-class IntelligenceClient extends RestClient {
-    constructor(requestWrapper,
-                customerId,
-                apiKey,
-                restEndpoint = null,
-                timeout = 15000,
-                userAgent = null) {
-
-        super(requestWrapper, customerId, apiKey, restEndpoint, timeout, userAgent, contentType);
-
-        this.intelligenceResource = INTELLIGENCE_ENDPOINT_PATH;
-    }
-
+export default class IntelligenceClient extends RestClient {
+    constructor(requestWrapper: any, customerId: any, apiKey: any, restEndpoint?: any, timeout?: number, userAgent?: any);
+    intelligenceResource: string;
     /***
      * Telesign Intelligence is like a credit check for digital profiles.
      *
@@ -38,10 +22,6 @@ class IntelligenceClient extends RestClient {
      * @param callback: Callback method to handle response.
      * @param requestBody: requestBody to be passed to Intelligence API
      */
-    intelligence(callback, requestBody) {
-        this.execute(callback, "POST", this.intelligenceResource, requestBody,
-            Constants.AuthMethodNames.BASIC);
-    }
+    intelligence(callback: any, requestBody: any): void;
 }
-
-module.exports = IntelligenceClient;
+import RestClient from './RestClient';

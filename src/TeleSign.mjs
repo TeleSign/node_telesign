@@ -1,13 +1,13 @@
-const RestClient = require('./RestClient.js');
-const MessagingClient = require('./MessagingClient.js');
-const ScoreClient = require('./ScoreClient.js');
-const PhoneIDClient = require('./PhoneIDClient.js');
-const VoiceClient = require('./VoiceClient.js');
-const AppVerifyClient = require('./AppVerifyClient.js');
-const IntelligenceClient = require('./IntelligenceClient.js');
-const { FetchRequestWrapper } = require('./RequestWrapper')
+import RestClient from './RestClient.mjs';
+import MessagingClient from './MessagingClient.mjs';
+import ScoreClient from './ScoreClient.mjs';
+import PhoneIDClient from './PhoneIDClient.mjs';
+import VoiceClient from './VoiceClient.mjs';
+import AppVerifyClient from './AppVerifyClient.mjs';
+import IntelligenceClient from './IntelligenceClient.mjs';
+import { FetchRequestWrapper } from './RequestWrapper.mjs';
 
-module.exports = class TeleSign {
+export default class TeleSign {
     constructor(customerId,
                 apiKey,
                 restEndpoint = "https://rest-api.telesign.com",

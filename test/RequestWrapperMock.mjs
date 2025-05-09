@@ -1,6 +1,6 @@
-const { RequestWrapper } = require('../src/RequestWrapper');
+import { RequestWrapper } from '../src/RequestWrapper.mjs';
 
-class FetchRequestWrapperMock extends RequestWrapper {
+export   class FetchRequestWrapperMock extends RequestWrapper {
   constructor(mockResponse, mockError, responseBody, optionsCallback) {
     super();
     this.mockResponse = mockResponse || null;
@@ -15,12 +15,10 @@ class FetchRequestWrapperMock extends RequestWrapper {
       callback(this.mockError, null, this.responseBody);
     } else {
       // Simulate a successful response
-      if (this.optionsCallback) { 
+      if (this.optionsCallback) {
       	this.optionsCallback(options)
       }
       callback(null, this.mockResponse, JSON.stringify(this.responseBody));
     }
   }
 }
-
-module.exports = FetchRequestWrapperMock;
