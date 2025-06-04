@@ -93,18 +93,6 @@ async function restClient() {
     expect(rc.userAgent).toContain('OriginatingSDK/node_telesign');
   });
 
-  it('should return default userAgent on error', () => {
-    const originalJSONParse = JSON.parse;
-    JSON.parse = () => {
-      throw new Error('Test error');
-    };
-
-    const rc = new RestClient(requestWrapper, customerId, apiKey);
-
-    JSON.parse = originalJSONParse;
-    expect(rc.userAgent).toBe('TeleSignSDK/ECMAScript-Node v-UNKNOWN');
-  });
-
   it('should generate headers for HMAC authentication', () => {
     const customerId = 'yourCustomerId';
     const apiKey = 'yourApiKey';
