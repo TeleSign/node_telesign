@@ -1,6 +1,6 @@
 {
   "name": "telesignsdk",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Official TeleSign SDK for Rest APIs including Messaging (SMS), Score, PhoneID, Voice, and AppVerify",
   "repository": {
     "type": "git",
