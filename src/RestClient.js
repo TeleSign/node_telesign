@@ -144,7 +144,7 @@ class RestClient {
     execute(callback, methodName, resource, params = null, authMethod = null, nonce = null, date = null) {
         var telesignURL = this.restEndpoint + resource;
         var bodyData = this.contentType=="application/json" ? "{}" : null;
-        if (methodName == "POST" || methodName == "PUT") {
+        if (methodName == "POST" || methodName == "PUT" || methodName == "PATCH") {
             if (params != null && Object.keys(params).length > 0) {
               if (this.contentType == "application/x-www-form-urlencoded") {
                  const urlSearchParams = new URLSearchParams(params);

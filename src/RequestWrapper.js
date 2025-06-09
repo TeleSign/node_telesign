@@ -17,8 +17,7 @@ const handleError = (error, callback) => {
   callback(error, null, error)
 };
 
-function fetchWithTimeout(url, options) {
-  const fetch = require('node-fetch');
+function fetchWithTimeout(fetch, url, options) {
   return Promise.race([
     fetch(url, options),
     new Promise((_, reject) => setTimeout(() => reject({ code: 408, message: 'Timeout' }), options.timeout))
@@ -27,21 +26,17 @@ function fetchWithTimeout(url, options) {
 
 class FetchRequestWrapper extends RequestWrapper {
 
+  constructor(fetch) {
+    super();
+    this.fetch = fetch || require('node-fetch');
+  }
+
   request(options, callback) {
     switch (options.method) {
     case 'POST':
-      fetchWithTimeout(options.url, {
-        method: options.method,
-        headers: options.headers,
-        body: options.body,
-        timeout: options.timeout
-      })
-        .then(response => response.json())
-        .then(data => handleResponse(data, callback))
-        .catch(error => handleError(error, callback));
-      break;
     case 'PUT':
-      fetchWithTimeout(options.url, {
+    case 'PATCH':
+      fetchWithTimeout(this.fetch, options.url, {
         method: options.method,
         headers: options.headers,
         body: options.body,
@@ -52,7 +47,7 @@ class FetchRequestWrapper extends RequestWrapper {
         .catch(error => handleError(error, callback));
       break;
     case 'GET':
-      fetchWithTimeout(options.url, {
+      fetchWithTimeout(this.fetch, options.url, {
         method: options.method,
         headers: options.headers,
         timeout: options.timeout
