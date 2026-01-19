@@ -5,7 +5,6 @@ const FetchRequestWrapperMock = require('./RequestWrapperMock');
 const TeleSignSDK = require('../src/TeleSign');
 const MessagingClient = require('../src/MessagingClient.js');
 const AppVerifyClient = require('../src/AppVerifyClient.js');
-const IntelligenceClient = require('../src/IntelligenceClient.js');
 const VoiceClient = require('../src/VoiceClient.js');
 const PhoneIDClient = require('../src/PhoneIDClient.js');
 const ScoreClient = require('../src/ScoreClient.js');
@@ -15,7 +14,7 @@ const { test, it, expect, mockFunction, runTests } = require('./TestFramework');
 // REST Client Tests -----------------------------
 async function restClient() {
   const customerId = 'FFFFFFFF-EEEE-DDDD-1234-AB1234567890';
-  const apiKey = 'VGVzdCBLZXk=';
+  const apiKey = 'ABC12345yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==';
   const restEndpoint = 'https://rest-api.telesign.com';
   const timeout = 15000;
   const userAgent = 'unit_test';
@@ -59,7 +58,7 @@ async function restClient() {
 
   it('should change the attribute restEndpoint', () => {
     const telesign = new RestClient(requestWrapper, customerId, apiKey);
-    
+
     expect(telesign.restEndpoint).toEqual("https://rest-api.telesign.com");
 
     const newRestEndpoint = "https://telesign.com";
@@ -193,7 +192,7 @@ async function restClient() {
 
   test('Test generate Telesign headers with POST', () => {
     const customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
-    const apiKey = 'VGVzdCBLZXk=';
+    const apiKey = 'ABC12345yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==';
     const method = 'POST';
     const date = 'Wed, 14 Dec 2016 18:20:12 GMT';
     const nonce = 'A1592C6F-E384-4CDB-BC42-C3AB970369E9';
@@ -201,7 +200,7 @@ async function restClient() {
     const bodyParamsURLEncoded = 'test=param';
     const contentType = "application/x-www-form-urlencoded";
     const expectedAuthorizationHeader =
-        'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:vXw/XzywdhgfEG2/zWLaFp7oXmjLB8iJDMndvDbZMjk=';
+      'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:G/zij8Wq/UNEG3ZqbzkKeHy795leUHvD+yP/R6AiOBo=';
 
     const actualHeaders = RestClient.generateTeleSignHeaders(
       customerId,
@@ -220,7 +219,7 @@ async function restClient() {
 
   test('Test generate Telesign headers with Basic Authentication', () => {
     const customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
-    const apiKey = 'VGVzdCBLZXk=';
+    const apiKey = 'ABC12345yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==';
     const method = 'POST';
     const date = 'Wed, 14 Dec 2016 18:20:12 GMT';
     const nonce = 'A1592C6F-E384-4CDB-BC42-C3AB970369E9';
@@ -228,7 +227,7 @@ async function restClient() {
     const bodyParamsURLEncoded = 'test=param';
     const contentType = "application/json";
     const expectedAuthorizationHeader =
-        'Basic RkZGRkZGRkYtRUVFRS1ERERELTEyMzQtQUIxMjM0NTY3ODkwOlZHVnpkQ0JMWlhrPQ==';
+      'Basic RkZGRkZGRkYtRUVFRS1ERERELTEyMzQtQUIxMjM0NTY3ODkwOkFCQzEyMzQ1eXVzdW1vTjZCWXNCVmtoK3lSSjVjemdzbkNlaFphT1lsZFBKZG1GaDZOZVg4a3VuWjJ6VTFZV2FVdy8wd1Y2eGZ3PT0=';
 
     const actualHeaders = RestClient.generateTeleSignHeaders(
       customerId,
@@ -248,7 +247,7 @@ async function restClient() {
 
   test('Test generate telesign headers unicode content', () => {
     const customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
-    const apiKey = 'VGVzdCBLZXk=';
+    const apiKey = 'ABC12345yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==';
     const method = 'POST';
     const date = 'Wed, 14 Dec 2016 18:20:12 GMT';
     const nonce = 'A1592C6F-E384-4CDB-BC42-C3AB970369E9';
@@ -256,7 +255,7 @@ async function restClient() {
     const bodyParamsURLEncoded = 'test=%CF%BF';
     const contentType = "application/x-www-form-urlencoded";
     const expectedAuthorizationHeader =
-        'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:lPpGXw4jTRdaEp2obzYAD5rR+2aWDInJ8ThLbq0nTGU=';
+      'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:0Z032XhL9xF6z1utDp+uevBCxml8AX23+G7UyUO86rM=';
 
     const actualHeaders = RestClient.generateTeleSignHeaders(
       customerId,
@@ -275,14 +274,14 @@ async function restClient() {
 
   test('Test generate telesign headers with GET', () => {
     const customerId = "FFFFFFFF-EEEE-DDDD-1234-AB1234567890";
-    const apiKey = 'VGVzdCBLZXk=';
+    const apiKey = 'ABC12345yusumoN6BYsBVkh+yRJ5czgsnCehZaOYldPJdmFh6NeX8kunZ2zU1YWaUw/0wV6xfw==';
     const method = 'GET';
     const date = 'Wed, 14 Dec 2016 18:20:12 GMT';
     const nonce = 'A1592C6F-E384-4CDB-BC42-C3AB970369E9';
     const resource = '/v1/resource';
     const contentType = "application/x-www-form-urlencoded";
     expectedAuthorizationHeader =
-        'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:wscyrZZtA7kdXu0i4D5KXyDmBcwH52JF1feiEKp+ir0=';
+      'TSA FFFFFFFF-EEEE-DDDD-1234-AB1234567890:ik/Bf7KzGXB9wZAZxLGzfPDow/JG3g8EIVdL6Gf0+eI=';
 
     const actualHeaders = RestClient.generateTeleSignHeaders(
       customerId,
@@ -347,7 +346,7 @@ async function restClient() {
     const response = { statusCode: 200 }
     const expectedResponse = { message: 'Successful response' }
     var optionsSent = null
-    const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => { optionsSent = options});
+    const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => { optionsSent = options });
     const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
     const resource = '/test';
 
@@ -364,9 +363,9 @@ async function restClient() {
     const expectedResponse = { message: 'Successful response' }
     var optionsSent = null
     const requestWrapper = new FetchRequestWrapperMock(response, null, expectedResponse, (options) => optionsSent = options);
-    
+
     const telesign = new RestClient(requestWrapper, 'customerId', 'apiKey');
-    
+
     const resource = '/test';
     const params = { key1: 'value1', key2: 'value2' }
     const nonce = 'A1592C6F-E384-4CDB-BC42-C3AB970369E9';
@@ -379,7 +378,7 @@ async function restClient() {
     expect(optionsSent.headers).toHaveProperty('Authorization', 'TSA customerId:y7PFf4BjQViy9TfeUTQutsQzKm/6T7NrklwOfaOTRKc=');
     expect(optionsSent.headers).toHaveProperty('Content-Type', '');
     expect(optionsSent.headers).toHaveProperty('Date', 'Wed, 14 Dec 2016 18:20:12 GMT');
-    expect(optionsSent.headers).toHaveProperty('User-Agent', function(value) {
+    expect(optionsSent.headers).toHaveProperty('User-Agent', function (value) {
       expect(value).toContain('TeleSignSDK/ECMAScript-Node')
       expect(value).toContain('OriginatingSDK/node_telesign')
     });
@@ -477,7 +476,7 @@ async function restClient() {
     expect(optionsSent.headers).toHaveProperty('Authorization', 'TSA customerId:aQk5d8nanixOKIzrQfzIWjEqvVDxEuMOCoSoiH7Cnsc=');
     expect(optionsSent.headers).toHaveProperty('Content-Type', 'application/x-www-form-urlencoded');
     expect(optionsSent.headers).toHaveProperty('Date', 'Wed, 15 Dec 2016 18:20:12 GMT');
-    expect(optionsSent.headers).toHaveProperty('User-Agent', function(value) {
+    expect(optionsSent.headers).toHaveProperty('User-Agent', function (value) {
       expect(value).toContain('TeleSignSDK/ECMAScript-Node')
       expect(value).toContain('OriginatingSDK/node_telesign')
     });
@@ -514,7 +513,7 @@ async function restClient() {
     expect(optionsSent.headers).toHaveProperty('Authorization', 'TSA customerId:5/gV/TLGSxrKPCUsuAwBpu5ZFm/xNAQpPuMe+Jvtt1k=');
     expect(optionsSent.headers).toHaveProperty('Content-Type', 'application/x-www-form-urlencoded');
     expect(optionsSent.headers).toHaveProperty('Date', 'Wed, 15 Dec 2016 18:20:12 GMT');
-    expect(optionsSent.headers).toHaveProperty('User-Agent', function(value) {
+    expect(optionsSent.headers).toHaveProperty('User-Agent', function (value) {
       expect(value).toContain('TeleSignSDK/ECMAScript-Node')
       expect(value).toContain('OriginatingSDK/node_telesign')
     });
@@ -642,7 +641,7 @@ async function restClient() {
   test('Test Telesign AppVerifyClient', async () => {
     const telesign = teleSignSDK();
     const xid = 'abcd1234';
-    const callback = () => {};
+    const callback = () => { };
     telesign.appverify.execute = mockFunction();
 
     telesign.appverify.status(callback, xid);
@@ -678,7 +677,7 @@ async function restClient() {
 
     telesign.sms.message(callback, phoneNumber, message, messageType);
 
-    expect(telesign.sms.execute).toHaveBeenCalledWith(callback, "POST", "/v1/messaging", {"message": "Test message notification", "message_type": "ARN", "phone_number": "phone-number"});
+    expect(telesign.sms.execute).toHaveBeenCalledWith(callback, "POST", "/v1/messaging", { "message": "Test message notification", "message_type": "ARN", "phone_number": "phone-number" });
     expect(telesign.sms.execute).toHaveBeenCalledTimes(1);
   });
 
@@ -696,7 +695,7 @@ async function restClient() {
     expect(messagingClient.execute.mock.calls[0][0]).toBe(callback);
     expect(messagingClient.execute.mock.calls[0][1]).toBe("POST");
     expect(messagingClient.execute.mock.calls[0][2]).toBe("/v1/messaging");
-    expect(messagingClient.execute.mock.calls[0][3]).toEqual({"message": "Test message notification", "message_type": "ARN", "phone_number": "phone-number"});
+    expect(messagingClient.execute.mock.calls[0][3]).toEqual({ "message": "Test message notification", "message_type": "ARN", "phone_number": "phone-number" });
     expect(messagingClient.execute).toHaveBeenCalledTimes(1);
   });
 
@@ -711,36 +710,6 @@ async function restClient() {
 
     expect(telesign.sms.execute).toHaveBeenCalledWith(callback, "GET", "/v1/messaging/Reference-ID", null);
     expect(telesign.sms.execute).toHaveBeenCalledTimes(1);
-  });
-
-  // Intelligence test ------------------
-  test('Test Telesign IntelligenceClient', () => {
-    const telesign = teleSignSDK();
-    const requestBody = {};
-    let callback = mockFunction;
-    telesign.intelligence.execute = mockFunction();
-
-    telesign.intelligence.intelligence(callback, requestBody);
-
-    expect(telesign.intelligence.execute).toHaveBeenCalledWith(callback, "POST", "/intelligence", {}, Constants.AuthMethodNames.BASIC);
-    expect(telesign.intelligence.execute).toHaveBeenCalledTimes(1);
-  });
-
-  test('Test IntelligenceClient', () => {
-    const intelligenceClient = new IntelligenceClient(requestWrapper, customerId, apiKey);
-    const requestBody = {};
-    let callback = mockFunction;
-    intelligenceClient.execute = mockFunction();
-
-    intelligenceClient.intelligence(callback, requestBody);
-
-    expect(intelligenceClient.execute).toHaveBeenCalled();
-    expect(intelligenceClient.execute.mock.calls[0][0]).toBe(callback);
-    expect(intelligenceClient.execute.mock.calls[0][1]).toBe("POST");
-    expect(intelligenceClient.execute.mock.calls[0][2]).toBe("/intelligence");
-    expect(intelligenceClient.execute.mock.calls[0][3]).toEqual({});
-    expect(intelligenceClient.execute.mock.calls[0][4]).toEqual(Constants.AuthMethodNames.BASIC);
-    expect(intelligenceClient.execute).toHaveBeenCalledTimes(1);
   });
 
   // Voice test ------------------
@@ -894,29 +863,30 @@ async function restClient() {
       requestRiskInsights
     );
 
-    expect(telesign.score.execute).toHaveBeenCalledWith(callback, "POST", "/v1/score/1-234-5678", expectedParams);
+    expect(telesign.score.execute).toHaveBeenCalledWith(callback, "POST", "/intelligence/phone", expectedParams);
     expect(telesign.score.execute).toHaveBeenCalledTimes(1);
   });
 
-  test('Test ScoreClient', () => {
+  test('Test ScoreClient - Intelligence Cloud', () => {
     const scoreClient = new ScoreClient(requestWrapper, customerId, apiKey);
-    const phoneNumber = "1-234-5678";
+    const phoneNumber = "11234567890";
     const accountLifeCycleEvent = "create";
     let callback = mockFunction();
     scoreClient.execute = mockFunction();
-    const expectedParams = {
-      account_lifecycle_event: "create"
-    }
 
     scoreClient.score(callback, phoneNumber, accountLifeCycleEvent);
 
     expect(scoreClient.execute).toHaveBeenCalled();
     expect(scoreClient.execute.mock.calls[0][0]).toBe(callback);
     expect(scoreClient.execute.mock.calls[0][1]).toBe("POST");
-    expect(scoreClient.execute.mock.calls[0][2]).toBe("/v1/score/1-234-5678");
-    expect(scoreClient.execute.mock.calls[0][3]).toEqual(expectedParams);
+    expect(scoreClient.execute.mock.calls[0][2]).toBe("/intelligence/phone");
+    expect(scoreClient.execute.mock.calls[0][3]).toEqual({
+      phone_number: "11234567890",
+      account_lifecycle_event: "create"
+    });
     expect(scoreClient.execute).toHaveBeenCalledTimes(1);
   });
+
 
   console.error = originalConsoleError;
 }
