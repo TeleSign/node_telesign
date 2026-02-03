@@ -4,8 +4,8 @@ const ScoreClient = require('./ScoreClient.js');
 const PhoneIDClient = require('./PhoneIDClient.js');
 const VoiceClient = require('./VoiceClient.js');
 const AppVerifyClient = require('./AppVerifyClient.js');
-const IntelligenceClient = require('./IntelligenceClient.js');
-const { FetchRequestWrapper } = require('./RequestWrapper')
+const { FetchRequestWrapper } = require('./RequestWrapper');
+const detectEndpoint = "https://detect.telesign.com";
 
 module.exports = class TeleSign {
     constructor(customerId,
@@ -21,9 +21,8 @@ module.exports = class TeleSign {
         this.rest = new RestClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent, source, sdkVersionOrigin, sdkVersionDependency);
         this.sms = new MessagingClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
         this.voice = new VoiceClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
-        this.score = new ScoreClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
+        this.score = new ScoreClient(requestWrapper, customerId, apiKey, detectEndpoint, timeout, useragent);
         this.phoneid = new PhoneIDClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
         this.appverify = new AppVerifyClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
-        this.intelligence = new IntelligenceClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
     }
 };
