@@ -4,7 +4,6 @@ const querystring = require('querystring');
 const FetchRequestWrapperMock = require('./RequestWrapperMock');
 const TeleSignSDK = require('../src/TeleSign');
 const MessagingClient = require('../src/MessagingClient.js');
-const AppVerifyClient = require('../src/AppVerifyClient.js');
 const VoiceClient = require('../src/VoiceClient.js');
 const PhoneIDClient = require('../src/PhoneIDClient.js');
 const ScoreClient = require('../src/ScoreClient.js');
@@ -635,34 +634,6 @@ async function restClient() {
     expect(telesign.rest.userAgent).toContain('OriginatingSDK/node_telesign_enterprise');
     expect(telesign.rest.userAgent).toContain('SDKVersion/1.0.0');
     expect(telesign.rest.userAgent).toContain('DependencySDKVersion/2.0.0');
-  });
-
-  // AppVerify test ------------------------
-  test('Test Telesign AppVerifyClient', async () => {
-    const telesign = teleSignSDK();
-    const xid = 'abcd1234';
-    const callback = () => { };
-    telesign.appverify.execute = mockFunction();
-
-    telesign.appverify.status(callback, xid);
-
-    expect(telesign.appverify.execute).toHaveBeenCalledTimes(1);
-  });
-
-  test('Test AppVerifyClient', async () => {
-    const appVerifyClient = new AppVerifyClient(requestWrapper, customerId, apiKey);
-    const xid = 'abcd1234';
-
-    let callback = mockFunction();
-    appVerifyClient.execute = mockFunction();
-
-    appVerifyClient.status(callback, xid);
-
-    expect(appVerifyClient.execute).toHaveBeenCalled();
-    expect(appVerifyClient.execute.mock.calls[0][0]).toBe(callback);
-    expect(appVerifyClient.execute.mock.calls[0][1]).toBe("GET");
-    expect(appVerifyClient.execute.mock.calls[0][2]).toBe("/v1/mobile/verification/status/abcd1234");
-    expect(appVerifyClient.execute).toHaveBeenCalledTimes(1);
   });
 
   // SMS test ------------------------

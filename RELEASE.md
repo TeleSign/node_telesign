@@ -1,3 +1,7 @@
+5.0.0
+
+- Removed App Verify Android.
+
 4.0.0
 
 - Added support for Intelligence Cloud to use new endpoint.
