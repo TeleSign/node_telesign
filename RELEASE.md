@@ -1,3 +1,7 @@
+5.1.0
+
+- Added code generation script.
+
 5.0.0
 
 - Removed App Verify Android.

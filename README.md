@@ -31,6 +31,17 @@ Follow these steps to add this SDK as a dependency to your project.
 
     `npm install telesignsdk --save`
 
+## Generating Routes for a New API Path
+
+1. Add the API path and operation definition to the YAML configuration in the external OpenAPI Specifications repository.
+2. Add the corresponding module and operation to `batch_process_sdk_autogen/config/node_telesign/generation.yaml`.
+3. From the repository root, run the Node SDK generator:
+
+    `npm run generate:node`
+
+   This generates the route map under `src`. The generated routes do not replace the SDK's HTTP clients or authentication code.
+4. Create the adapter and client for the new API, following the existing `*Adapter.js` and `*Client.js` patterns. Register the client and adapter in `src/TeleSign.js`, and add tests for the new path.
+
 ## Authentication
 
 If you use a Telesign SDK to make your request, authentication is handled behind-the-scenes for you. All you need to provide is your Customer ID and API Key(or password). The SDKs apply Digest authentication whenever they make a request to a Telesign service where it is supported. Intelligence uses Basic authentication. 

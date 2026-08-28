@@ -1,6 +1,6 @@
 {
   "name": "telesignsdk",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Official TeleSign SDK for Rest APIs including Messaging (SMS), Intelligence Cloud, PhoneID, Voice, and AppVerify",
   "repository": {
     "type": "git",
@@ -8,7 +8,8 @@
   },
   "main": "src/TeleSign.js",
   "scripts": {
-    "test": "node ./test/test.suite.js"
+    "test": "node ./test/test.suite.js",
+    "generate:node": "bash ./scripts/generate-node-sdk.sh"
   },
   "dependencies": {
     "node-fetch": "^2.7.0"
