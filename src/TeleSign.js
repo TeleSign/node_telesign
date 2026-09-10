@@ -4,6 +4,7 @@ const ScoreClient = require('./ScoreClient.js');
 const PhoneIDClient = require('./PhoneIDClient.js');
 const VoiceClient = require('./VoiceClient.js');
 const { FetchRequestWrapper } = require('./RequestWrapper');
+const ScoreAdapter = require('./score/ScoreAdapter.js');
 const detectEndpoint = "https://detect.telesign.com";
 
 module.exports = class TeleSign {
@@ -20,7 +21,8 @@ module.exports = class TeleSign {
         this.rest = new RestClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent, source, sdkVersionOrigin, sdkVersionDependency);
         this.sms = new MessagingClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
         this.voice = new VoiceClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
-        this.score = new ScoreClient(requestWrapper, customerId, apiKey, detectEndpoint, timeout, useragent);
+        const scoreClient = new ScoreClient(requestWrapper, customerId, apiKey, detectEndpoint, timeout, useragent);
+        this.score = new ScoreAdapter(scoreClient);
         this.phoneid = new PhoneIDClient(requestWrapper, customerId, apiKey, restEndpoint, timeout, useragent);
     }
 };
