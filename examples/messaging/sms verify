@@ -1,0 +1,20 @@
+  const readline = require('readline');
+  var TeleSignSDK = require('telesignsdk');
+  const customerId = "031B6E8F-4C09-47FC-93AF-F0F6E8C66F38";
+  const apiKey = "*********************************";
+  const rest_endpoint = "https://rest-api.telesign.com";
+  const timeout = 10*1000; // 10 secs
+
+  const client = new TeleSignSDK( customerId,
+      apiKey,
+      rest_endpoint,
+      timeout // optional
+      // userAgent
+  );
+
+  const phoneNumber = "09250738964";
+  const messageType = "ARN";
+  const verifyCode = "32658";
+  const message = "Your code is " + verifyCode;
+
+  console.log("## MessagingClient.message ##")
