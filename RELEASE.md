@@ -1,3 +1,7 @@
+5.2.0
+
+- Added support for Email Intelligence.
+
 5.1.0
 
 - Added code generation script.
